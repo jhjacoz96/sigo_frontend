@@ -56,6 +56,22 @@
           </v-col>
           <v-col
             cols="12"
+            md="6"
+          >
+            <base-text-field
+              label="Precio de compra"
+            />
+          </v-col>
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <base-text-field
+              label="Precio de venta"
+            />
+          </v-col>
+          <v-col
+            cols="12"
           >
             <base-text-field
               label="Descrición"
