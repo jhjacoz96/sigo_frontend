@@ -14,7 +14,7 @@
         top
         right
         absolute
-        to="/admin/entrada/agregar"
+        to="/admin/ingreso/agregar"
       >
         <span v-if="$vuetify.breakpoint.smAndUp">Agregar</span> <v-icon>mdi-plus</v-icon>
       </v-btn>
