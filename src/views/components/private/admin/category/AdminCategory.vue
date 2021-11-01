@@ -6,10 +6,10 @@
     >
       <template v-slot:after-heading>
         <div class="font-weight-light card-title mt-2">
-          Categorias
+          Categorías
         </div>
       </template>
-      <v-row justify="center">
+      <!-- <v-row justify="center">
         <v-col
           cols="12"
           md="10"
@@ -31,7 +31,23 @@
             <admin-category-add :dialog.sync="dialog" />
           </v-card>
         </v-col>
-      </v-row>
+      </v-row> -->
+      <v-btn
+        color="primary"
+        absolute
+        top
+        right
+        @click="dialog=!dialog"
+      >
+        <span v-if="$vuetify.breakpoint.smAndUp">Agregar</span> <v-icon>mdi-plus</v-icon>
+      </v-btn>
+      <admin-category-list
+        :categories.sync="categories"
+      />
+      <admin-category-add
+        :dialog.sync="dialog"
+        :categories.sync="categories"
+      />
     </base-material-card>
   </v-container>
 </template>
@@ -46,6 +62,7 @@
     data () {
       return {
         dialog: false,
+        categories: [],
       }
     },
   }

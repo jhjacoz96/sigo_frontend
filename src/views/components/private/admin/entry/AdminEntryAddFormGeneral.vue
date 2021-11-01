@@ -1,143 +1,112 @@
 <template>
   <v-container class="justify-center">
-    <div class="text-center display-1 font-weight-light mb-6">
-      Comencemos con información básica
-    </div>
     <v-row justify="center">
       <v-col
         cols="10"
         md="6"
       >
-        <v-text-field
-          value="10/10/2021"
-          label="fecha"
-          filled
-          solo
-        />
-      </v-col>
-      <v-col
-        cols="10"
-        md="6"
-      >
-        <v-autocomplete
-          v-model="model"
-          :items="items"
-          :loading="isLoading"
-          :search-input.sync="search"
-          solo
-          filled
-          hide-no-data
-          hide-selected
-          item-text="Description"
-          item-value="API"
-          label="Nombre del proveedor"
-          placeholder="Ingrese el nombre del proveedor"
-          return-object
-        />
+        <v-form
+          ref="form"
+          v-model="valid"
+          lazy-validation
+        >
+          <v-select
+            v-model="expenseComputed.type_payment"
+            :rules="validation_rules_type_payment"
+            label="Tipo de pago"
+            outlined
+            :items="type_payments"
+          />
+          <v-autocomplete
+            v-model="expenseComputed.provider_id"
+            :disabled="$route.params.id ? true : false"
+            :rules="validation_rules_provider"
+            :items="providers"
+            :loading="isLoading"
+            :search-input.sync="autocompleteProvider"
+            outlined
+            hide-no-data
+            hide-selected
+            item-text="name"
+            item-value="id"
+            label="Nombre del Proveedor"
+            placeholder="Ingrese el documento de identidad..."
+          />
+        </v-form>
       </v-col>
     </v-row>
-    <v-card
-      v-if="model"
-    >
-      <v-card-title>
-        Datos del proveedor
-      </v-card-title>
-      <v-card-text>
-        <v-row class="justify-space-between">
-          <v-col
-            v-for="(detail, i) in details"
-            :key="i"
-            cols="6"
-            md="4"
-          >
-            <div>{{ detail.value }}</div>
-            <div class="grey--text">
-              {{ detail.key }}
-            </div>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
   </v-container>
 </template>
 
 <script>
+  import { mapMutations } from 'vuex'
+  import { getProvidersApi } from '@/api/services'
+  import { validationRules } from '@/mixins/validationRules'
   export default {
-    name: 'AdminOrderAddFormClient',
+    name: 'AdminEntryAddFormGeneral',
+    mixins: [validationRules],
     props: {
-      city: {
-        type: String,
-        default: '',
+      expense: {
+        type: Object,
+        default: () => ({}),
+      },
+      validate: {
+        type: Boolean,
+        default: () => ({}),
       },
     },
     data: () => ({
+      valid: true,
       descriptionLimit: 60,
       entries: [],
       isLoading: false,
       model: null,
-      search: null,
+      autocompleteProvider: null,
+      providers: [],
       details: undefined,
+      type_payments: ['efectivo', 'transferencia', 'credito'],
     }),
     computed: {
-      changeCity: {
+      expenseComputed: {
         get () {
-          return this.city
+          return this.expense
         },
         set (value) {
-          this.$emit('update:city', value)
+          this.$emit('update:expense', value)
         },
       },
-      fields () {
-        if (!this.model) return []
-        return Object.keys(this.model).map(key => {
-          return {
-            key,
-            value: this.model[key] || 'n/a',
-          }
-        })
-      },
-      items () {
-        return this.entries.map(entry => {
-          const Description = entry.Description.length > this.descriptionLimit
-            ? entry.Description.slice(0, this.descriptionLimit) + '...'
-            : entry.Description
-
-          return Object.assign({}, entry, { Description })
-        })
+      validateComputed: {
+        get () {
+          return this.validate
+        },
+        set (value) {
+          this.$emit('update:validate', value)
+        },
       },
     },
-
     watch: {
-      model (val) {
-        if (!val) this.details = []
-        this.details = Object.keys(val).map(key => {
-          return {
-            key,
-            value: this.model[key] || 'n/a',
-          }
-        })
+      valid (val) {
+        this.validateComputed = val
       },
-      search (val) {
-        // Items have already been loaded
-        if (this.items.length > 0) return
-
-        // Items have already been requested
-        if (this.isLoading) return
-
-        this.isLoading = true
-
-        // Lazily load input items
-        fetch('https://api.publicapis.org/entries')
-          .then(res => res.json())
-          .then(res => {
-            const { count, entries } = res
-            this.count = count
-            this.entries = entries
+    },
+    created () {
+      this.getProviders()
+    },
+    methods: {
+      ...mapMutations(['SET_ALERT', 'SET_LOADING']),
+      async getProviders () {
+        const serviceResponse = await getProvidersApi()
+        if (serviceResponse.ok) {
+          this.providers = serviceResponse.data
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
           })
-          .catch(err => {
-            // console.log(err)
-          })
-          .finally(() => (this.isLoading = false))
+        }
+      },
+      validateForm () {
+        return this.$refs.form.validate()
       },
     },
   }

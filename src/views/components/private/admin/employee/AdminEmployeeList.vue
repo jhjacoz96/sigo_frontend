@@ -1,43 +1,73 @@
 <template>
   <v-container class="text-center justify-center">
     <v-card>
-      <v-card-title class="pa-3">
+      <v-card-actions>
         <v-spacer />
-        <base-text-field
+        <v-text-field
+          v-model="search"
+          dense
+          outlined
           label="Buscar"
+          color="secondary"
         />
-      </v-card-title>
+      </v-card-actions>
       <v-data-table
         :headers="headers"
-        :items="desserts"
+        :items="employeesComputed"
+        :search="search"
+        :loading="loadingState"
         :items-per-page="5"
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
-            fab
-            x-small
-            color="warning"
-            @click="item"
+            color="primary"
+            small
+            icon
+            @click="editedItem(item)"
           >
-            <v-icon>mdi-edit</v-icon>
+            <v-icon>mdi-pencil</v-icon>
           </v-btn>
           <v-btn
-            fab
-            x-small
-            color="pink"
-            @click="item"
+            color="primary"
+            small
+            icon
+            class="ml-1"
+            @click="dialogDelete = true"
           >
             <v-icon>mdi-delete</v-icon>
           </v-btn>
+          <admin-employee-delete
+            :dialog-delete.sync="dialogDelete"
+            :employee.sync="item"
+            :employees.sync="employees"
+          />
         </template>
       </v-data-table>
+      <admin-employee-add
+        :dialog.sync="dialog"
+        :employee.sync="employee"
+        :index-edit.sync="indexEdit"
+        :employees.sync="employees"
+      />
     </v-card>
   </v-container>
 </template>
 
 <script>
+  import { mapMutations, mapState } from 'vuex'
+  import { getEmployeesApi } from '@/api/services'
   export default {
     name: 'AdminEmployeeList',
+    components: {
+      AdminEmployeeDelete: () => import('./AdminEmployeeDelete'),
+      AdminEmployeeAdd: () => import('./AdminEmployeeAdd'),
+    },
+    props: {
+      employees: {
+        type: Array,
+        default: () => ([]),
+      },
+    },
     data () {
       return {
         headers: [
@@ -61,23 +91,49 @@
             align: 'center',
             value: 'email',
           },
-          {
-            text: 'Rol',
-            align: 'center',
-            value: 'rol',
-          },
-          { text: 'Acciones', sortable: false, value: 'accion' },
+          { text: 'Acciones', sortable: false, filterable: false, value: 'accion' },
         ],
-        desserts: [
-          {
-            name: 'Jhon Contreras',
-            document: '26396606',
-            phone: '042694844',
-            email: 'jg@gmail.com',
-            rol: 'Secretaria',
-          },
-        ],
+        employee: {},
+        search: '',
+        dialogDelete: false,
+        dialog: false,
+        indexEdit: -1,
       }
+    },
+    computed: {
+      ...mapState(['loadingState']),
+      employeesComputed: {
+        get () {
+          return this.employees
+        },
+        set (value) {
+          this.$emit('update:employees', value)
+        },
+      },
+    },
+    created () {
+      this.getEmployees()
+    },
+    methods: {
+      ...mapMutations(['SET_ALERT', 'SET_LOADING']),
+      async getEmployees () {
+        this.SET_LOADING(true)
+        const serviceResponse = await getEmployeesApi()
+        if (serviceResponse) {
+          this.employeesComputed = serviceResponse.data
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+        this.SET_LOADING(false)
+      },
+      editedItem (item) {
+        this.dialog = true
+        Object.assign(this.employee, item)
+        this.indexEdit = this.employeesComputed.indexOf(item)
+      },
     },
   }
 </script>

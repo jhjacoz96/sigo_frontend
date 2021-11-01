@@ -13,7 +13,9 @@
           <store-order-filter/>
       </v-card-text> -->
       <v-card-text>
-        <store-order-list />
+        <store-order-list
+          :orders.sync="orders"
+        />
       </v-card-text>
     </base-material-card>
   </v-container>
@@ -27,6 +29,7 @@
     },
     data () {
       return {
+        orders: [],
       }
     },
   }

@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Store from './store/index'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'hash',
   base: process.env.BASE_URL,
   routes: [
@@ -15,13 +16,29 @@ export default new Router({
           name: 'Login',
           path: '',
           component: () => import('@/views/components/public/Login'),
+          beforeEnter: (to, from, next) => {
+            var authenticated = Store.getters['auth/loggedInGetter']
+            var user = Store.getters['auth/userGetter']
+            if (authenticated) {
+              if (user.modelAssociate === 'CLient') next({ name: 'Tienda' })
+              else next({ name: 'Administración' })
+            } else {
+              next()
+            }
+          },
         },
       ],
     },
     {
       path: '/tienda',
+      meta: { requiresAuth: true },
       component: () => import('@/views/components/private/store/core/Index'),
       children: [
+        {
+          name: 'Perfil',
+          path: 'perfil',
+          component: () => import('@/views/components/private/shared/Profile'),
+        },
         {
           name: 'Tienda',
           path: '',
@@ -42,26 +59,21 @@ export default new Router({
           path: 'favorito',
           component: () => import('@/views/components/private/store/StoreHeart'),
         },
-        {
-          name: 'Categorias',
-          path: 'categoria',
-          component: () => import('@/views/components/private/store/StoreCategory'),
-        },
+        // {
+        //   name: 'Categorias',
+        //   path: 'categoria',
+        //   component: () => import('@/views/components/private/store/StoreCategory'),
+        // },
         {
           name: 'Perdidos',
           path: 'pedido',
           component: () => import('@/views/components/private/store/StoreOrder'),
         },
-        {
-          name: '',
-          path: 'categoria/:category',
-          component: () => import('@/views/components/private/store/StoreProductByCategory'),
-        },
-        {
-          name: 'Editar Perfil',
-          path: 'editar-perfil',
-          component: () => import('@/views/components/private/shared/ProfileEdit'),
-        },
+        // {
+        //   name: '',
+        //   path: 'categoria/:category',
+        //   component: () => import('@/views/components/private/store/StoreProductByCategory'),
+        // },
         {
           name: 'Tabs',
           path: 'tabs',
@@ -71,8 +83,14 @@ export default new Router({
     },
     {
       path: '/admin',
+      meta: { requiresAuth: true },
       component: () => import('@/views/components/private/admin/core/Index'),
       children: [
+        {
+          name: 'Perfil',
+          path: 'perfil',
+          component: () => import('@/views/components/private/shared/Profile'),
+        },
         {
           name: 'Configuración de organización',
           path: 'configuracion',
@@ -96,6 +114,11 @@ export default new Router({
         {
           name: 'Agregar pedido',
           path: 'pedido/agregar',
+          component: () => import('@/views/components/private/admin/order/AdminOrderAdd'),
+        },
+        {
+          name: 'Editar pedido',
+          path: 'pedido/editar/:id',
           component: () => import('@/views/components/private/admin/order/AdminOrderAdd'),
         },
         {
@@ -131,6 +154,11 @@ export default new Router({
         {
           name: 'Agrgar ingreso de compra',
           path: 'ingreso/agregar',
+          component: () => import('@/views/components/private/admin/entry/AdminEntryAdd'),
+        },
+        {
+          name: 'Editar ingreso de compra',
+          path: 'ingreso/editar/:id',
           component: () => import('@/views/components/private/admin/entry/AdminEntryAdd'),
         },
       ],
@@ -292,3 +320,21 @@ export default new Router({
     },
   ],
 })
+
+router.beforeEach(async (to, from, next) => {
+  const routerProtected = await to.matched.some(record => record.meta.requiresAuth)
+  if (routerProtected) {
+    var authenticated = Store.getters['auth/loggedInGetter']
+    if (authenticated) {
+      next()
+    } else {
+      next({
+        name: 'Login',
+      })
+    }
+  } else {
+    next()
+  }
+})
+
+export default router

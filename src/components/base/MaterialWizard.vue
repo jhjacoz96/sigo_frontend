@@ -52,24 +52,26 @@
         min-width="125"
         @click="$emit('click:prev')"
       >
-        Previous
+        Atrás
       </v-btn>
 
       <v-spacer />
 
       <v-btn
-        :disabled="!availableSteps.includes(internalValue + 1)"
-        :color="internalValue === items.length - 1 ? 'primary' : 'secondary'"
+        :disabled="!availableSteps.includes(internalValue + 1) || loadingState"
+        :loading="loadingState"
+        :color="validSave ? 'primary' : 'secondary'"
         min-width="100"
         @click="$emit('click:next')"
       >
-        {{ internalValue === items.length - 1 ? 'Confirmar pedido' : 'Siguiente' }}
+        {{ validSave ? 'Confirmar pedido' : 'Siguiente' }}
       </v-btn>
     </v-card-actions>
   </base-material-card>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   // Mixins
   import Proxyable from 'vuetify/lib/mixins/proxyable'
 
@@ -94,6 +96,12 @@
       title: {
         type: String,
         default: '',
+      },
+    },
+    computed: {
+      ...mapState(['loadingState']),
+      validSave () {
+        return this.internalValue === this.items.length - 1
       },
     },
   }

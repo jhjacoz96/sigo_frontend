@@ -28,34 +28,48 @@
             <div class="text-center grey--text body-1 font-weight-light mb-4">
               Ingresa con tus credenciales
             </div>
-
-            <v-text-field
-              color="primary"
-              label="Correo electrónico"
-              filled
-              rounded
-              prepend-icon="mdi-email"
-            />
-
-            <v-text-field
-              color="primary"
-              filled
-              rounded
-              label="Contraseña"
-              prepend-icon="mdi-lock-outline"
-            />
-            <div class="mb-6">
-              <router-link to="/">
-                ¿Has olvidado tu contraseña?
-              </router-link>
-            </div>
-            <v-btn
-              large
-              color="secondary"
-              @click="login"
+            <v-form
+              ref="form1"
+              v-model="valid"
+              lazy-validation
             >
-              Ingresar
-            </v-btn>
+              <v-text-field
+                v-model="user.email"
+                color="secondary"
+                label="Correo electrónico"
+                rounded
+                :rules="validation_rules_email"
+                outlined
+                prepend-icon="mdi-email"
+              />
+
+              <v-text-field
+                v-model="user.password"
+                color="secondary"
+                rounded
+                :rules="validation_rules_password"
+                outlined
+                label="Contraseña"
+                prepend-icon="mdi-lock"
+                :type="showPassword ? 'text' : 'password'"
+                :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                @click:append="showPassword = !showPassword"
+              />
+              <div class="mb-6">
+                <router-link to="/">
+                  ¿Has olvidado tu contraseña?
+                </router-link>
+              </div>
+              <v-btn
+                large
+                :disabled="loadingState || !valid"
+                :loading="loadingState"
+                color="primary"
+                @click="login"
+              >
+                Ingresar
+              </v-btn>
+            </v-form>
           </v-card-text>
         </base-material-card>
       </v-slide-y-transition>
@@ -64,28 +78,50 @@
 </template>
 
 <script>
+  import { mapState, mapMutations, mapActions } from 'vuex'
+  import { validationRules } from '@/mixins/validationRules'
   export default {
     name: 'PagesLogin',
-
-    data: () => ({
-      socials: [
-        {
-          href: '#',
-          icon: 'mdi-facebook-box',
+    mixins: [validationRules],
+    data () {
+      return {
+        valid: true,
+        loading: false,
+        showPassword: false,
+        user: {
+          email: '',
+          password: '',
         },
-        {
-          href: '#',
-          icon: 'mdi-twitter',
-        },
-        {
-          href: '#',
-          icon: 'mdi-github-box',
-        },
-      ],
-    }),
+      }
+    },
+    computed: {
+      ...mapState(['loadingState']),
+      ...mapState('auth', ['loggedInState', 'userState']),
+      validate () {
+        return this.$refs.form1.validate()
+      },
+      password () {
+        return this.user.password
+      },
+    },
     methods: {
-      login () {
-        this.$router.push('/tienda')
+      ...mapMutations(['SET_ALERT']),
+      ...mapMutations(['SET_LOADING']),
+      ...mapActions('auth', ['loginAction']),
+      async login () {
+        this.SET_LOADING(true)
+        const serviceResponse = await this.loginAction(this.user)
+        console.log(serviceResponse)
+        if (serviceResponse.ok) {
+          if (this.userState.modelAssociate === 'CLient') this.$router.push('/tienda')
+          else this.$router.push('/admin')
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+        this.SET_LOADING(false)
       },
     },
   }

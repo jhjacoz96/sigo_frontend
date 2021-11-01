@@ -10,20 +10,26 @@
     @click:prev="tab--"
   >
     <v-tab-item class="pb-12">
-      <admin-entry-add-form-general :city.sync="city" />
+      <admin-entry-add-form-general
+        ref="adminEntryAddFormGeneral"
+        :expense.sync="expense"
+        :validate.sync="valid[0]"
+      />
     </v-tab-item>
 
     <v-tab-item class="pb-12">
-      <admin-entry-add-form-product :city.sync="city" />
-    </v-tab-item>
-
-    <v-tab-item class="pb-12">
-      dddd
+      <admin-entry-add-form-product
+        ref="adminEntryAddFormProduct"
+        :expense.sync="expense"
+        :validate.sync="valid[1]"
+      />
     </v-tab-item>
   </base-material-wizard>
 </template>
 
 <script>
+  import { mapMutations, mapState } from 'vuex'
+  import { saveExpenseAdminApi, showExpenseAdminApi, updateExpenseAdminApi } from '@/api/services'
   export default {
     name: 'AdminEntryAddForm',
     components: {
@@ -31,86 +37,94 @@
       AdminEntryAddFormProduct: () => import('./AdminEntryAddFormProduct'),
     },
     data: () => ({
-      Entry: 'ddd',
-      account: [],
-      accounts: [
-        {
-          icon: 'mdi-pencil',
-          type: 'design',
-        },
-        {
-          icon: 'mdi-code-tags',
-          type: 'code',
-        },
-        {
-          icon: 'mdi-laptop',
-          type: 'develop',
-        },
-      ],
-      address: '',
-      city: 'caracas',
-      email: '',
-      first: '',
-      image: null,
-      last: '',
-      state: '',
-      states: [
-        'Alabama', 'Alaska', 'American Samoa', 'Arizona',
-        'Arkansas', 'California', 'Colorado', 'Connecticut',
-        'Delaware', 'District of Columbia', 'Federated States of Micronesia',
-        'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho',
-        'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-        'Louisiana', 'Maine', 'Marshall Islands', 'Maryland',
-        'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
-        'Missouri', 'Montana', 'Nebraska', 'Nevada',
-        'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
-        'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio',
-        'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico',
-        'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
-        'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia',
-        'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
-      ],
-      street: '',
+      valid: [true, false],
+      dialog: false,
+      expense: {
+        type_payment: '',
+        provider_id: null,
+        total: 0,
+        products: [],
+      },
       tab: 0,
       tabs: ['Datos generales', 'Carrito'],
     }),
     computed: {
-      stringAccount () {
-        return this.account.join(',')
-      },
+      ...mapState(['loadingState']),
       scope () {
         if (this.tab === 0) return 'Datos generales'
         return 'Carrito'
       },
       availableSteps () {
         const steps = [0]
-
-        steps.push(1)
-
-        steps.push(2)
-
+        if (this.valid[0]) steps.push(1)
+        if (this.valid[1]) {
+          steps.includes(1) &&
+            steps.push(2)
+        }
         return steps
       },
     },
-
+    created () {
+      if (this.$route.params.id) {
+        this.getExpense()
+      }
+    },
     methods: {
-      next () {
-        this.validateForm(this.scope).then(item => {
-          if (!item) return
-
-          if (this.tab === this.tabs.length - 1) {
-            alert('Form finished')
-          } else {
-            this.tab++
-          }
-        })
+      ...mapMutations(['SET_ALERT', 'SET_LOADING']),
+      async next () {
+        var v = await this.validateCurrentForm(this.getRefComponent())
+        if (v) {
+          this.validateForm(this.scope).then(async item => {
+            if (!item) return
+            if (this.tab === this.tabs.length - 1) {
+              this.SET_LOADING(true)
+              const serviceResponse = this.$route.params.id ? await updateExpenseAdminApi(this.expense.id, this.expense) : await saveExpenseAdminApi(this.expense)
+              if (serviceResponse.ok) {
+                this.SET_ALERT({
+                  text: serviceResponse.message,
+                  color: 'success',
+                })
+                this.$router.push('/admin/ingreso')
+              } else {
+                this.SET_ALERT({
+                  text: serviceResponse.message.text,
+                  color: 'warning',
+                })
+              }
+              this.SET_LOADING(false)
+            } else {
+              this.tab++
+            }
+          })
+        }
       },
-      onChange (val) {
-        const value = val.target.files[0]
-
-        if (!value) return (this.image = null)
-
-        this.image = URL.createObjectURL(value)
+      async getExpense () {
+        const serviceResponse = await showExpenseAdminApi(this.$route.params.id)
+        console.log(serviceResponse)
+        if (serviceResponse.ok) {
+          this.expense = serviceResponse.data
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+      },
+      getRefComponent () {
+        var res
+        switch (this.tab) {
+          case 0:
+            res = 'adminEntryAddFormGeneral'
+            break
+          default:
+            res = 'adminEntryAddFormProduct'
+            break
+        }
+        return res
+      },
+      async validateCurrentForm (refComponent) {
+        const v = await this.$refs[refComponent].validateForm()
+        return v
       },
       validateForm (scope) {
         return this.$validator.validateAll(scope)

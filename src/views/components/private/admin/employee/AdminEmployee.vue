@@ -18,8 +18,13 @@
       >
         <span v-if="$vuetify.breakpoint.smAndUp">Agregar</span> <v-icon>mdi-plus</v-icon>
       </v-btn>
-      <admin-employee-list />
-      <admin-employee-add :dialog.sync="dialog" />
+      <admin-employee-list
+        :employees.sync="employees"
+      />
+      <admin-employee-add
+        :dialog.sync="dialog"
+        :employees.sync="employees"
+      />
     </base-material-card>
   </v-container>
 </template>
@@ -34,6 +39,7 @@
     data () {
       return {
         dialog: false,
+        employees: [],
       }
     },
   }

@@ -14,7 +14,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import store from './store/index'
 import './plugins/base'
 import './plugins/chartist'
 import './plugins/vee-validate'
@@ -22,10 +22,17 @@ import './plugins/vue-world-map'
 import vuetify from './plugins/vuetify'
 import i18n from './i18n'
 import filters from './helpers/filters'
+import moment from 'moment'
 
 Vue.config.productionTip = false
 
 Vue.use(filters)
+Vue.prototype.moment = moment
+// const moment = require('moment')
+// require('moment/locale/es')
+// Vue.use(require('vue-moment'), {
+//   moment,
+// })
 
 new Vue({
   router,

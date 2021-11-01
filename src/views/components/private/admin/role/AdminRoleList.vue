@@ -14,17 +14,17 @@
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
-            fab
-            x-small
-            color="warning"
+            color="primary"
+            small
+            icon
             @click="item"
           >
             <v-icon>mdi-edit</v-icon>
           </v-btn>
           <v-btn
-            fab
-            x-small
-            color="pink"
+            color="primary"
+            small
+            icon
             @click="item"
           >
             <v-icon>mdi-delete</v-icon>

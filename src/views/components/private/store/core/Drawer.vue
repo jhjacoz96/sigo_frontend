@@ -102,21 +102,16 @@
           title: 'Pedidos',
           to: '/tienda/pedido',
         },
-        {
-          icon: 'mdi-widgets',
-          title: 'Categorias',
-          to: '/tienda/categoria',
-        },
-        {
-          icon: 'mdi-lock',
-          title: 'Cerrar sesión',
-          to: '/',
-        },
+        // {
+        //   icon: 'mdi-widgets',
+        //   title: 'Categorias',
+        //   to: '/tienda/categoria',
+        // },
       ],
       profile: {
         icon: 'mdi-account',
         title: 'Jhon Contreras',
-        to: 'perfil',
+        to: '/tienda/perfil',
       },
     }),
 
@@ -146,7 +141,7 @@
         return {
           ...item,
           children: item.children ? item.children.map(this.mapItem) : undefined,
-          title: this.$t(item.title),
+          title: item.title,
         }
       },
     },

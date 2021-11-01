@@ -1,16 +1,15 @@
 <template>
   <v-card
-    :style="$vuetify.breakpoint.mdAndUp ? 'max-width:200px;' : ''"
+    :style="$vuetify.breakpoint.smAndUp ? 'max-width:250px;' : ''"
     elevation="4"
-    :class="!$vuetify.breakpoint.mdAndUp ? 'd-flex justify-space-between ': 'text-center'"
+    :class="!$vuetify.breakpoint.smAndUp ? 'd-flex justify-space-between ': 'text-center'"
   >
     <v-img
-      :src="imageDefault"
+      :src="src"
       :max-width="!$vuetify.breakpoint.mdAndUp ? 100 : 200"
       :max-height="!$vuetify.breakpoint.mdAndUp ? 250 : 100"
     />
-    <v-card-text>
-      {{ src }}
+    <v-card-text class="text-left">
       <slot name="descriptions" />
     </v-card-text>
     <v-card-actions v-if="$slots.actions">
@@ -24,12 +23,11 @@
     props: {
       src: {
         type: String,
-        default: '@/assets/default.jpg',
+        default: require('@/assets/default.jpg'),
       },
     },
     data () {
       return {
-        imageDefault: require('@/assets/login.jpg'),
       }
     },
   }

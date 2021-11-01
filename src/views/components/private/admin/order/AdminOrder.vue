@@ -10,7 +10,7 @@
         </div>
       </template>
       <v-btn
-        color="secondary"
+        color="primary"
         top
         right
         absolute
@@ -19,9 +19,13 @@
         <span v-if="$vuetify.breakpoint.smAndUp">Agregar</span> <v-icon>mdi-plus</v-icon>
       </v-btn>
       <v-container class="text-center justify-center">
-        <admin-order-tab v-model="tabs" />
+        <admin-order-tab
+          @click:filter="getOrders($event)"
+        />
         <v-divider class="mt-4" />
-        <admin-order-list />
+        <admin-order-list
+          ref="adminOrderList"
+        />
       </v-container>
     </base-material-card>
   </v-container>
@@ -36,21 +40,12 @@
     },
     data () {
       return {
-        v: 'f',
-        tabs: [
-          {
-            name: 'Pendientes',
-            to: '',
-          },
-          {
-            name: 'Confirmados',
-            to: '',
-          },
-          {
-            name: 'Enviados',
-            to: '',
-          }],
       }
+    },
+    methods: {
+      getOrders (status) {
+        this.$refs.adminOrderList.getOrders(status)
+      },
     },
   }
 </script>

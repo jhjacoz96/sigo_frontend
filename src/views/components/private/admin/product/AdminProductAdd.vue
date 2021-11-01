@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="dialogEvent"
+    v-model="dialogComputed"
     max-width="700"
     persistent
   >
@@ -14,99 +14,208 @@
       >
         <v-icon>mdi-close</v-icon>
       </v-btn>
-      <v-card-title>
-        Agregar producto
-      </v-card-title>
-      <v-card-text>
-        <v-row
-          class="mx-auto"
-          justify="space-around"
-          style="max-width: 500px;"
-        >
-          <v-col
-            cols="auto"
-            class="text-center"
+      <v-form
+        ref="form"
+        v-model="valid"
+        lazy-validation
+      >
+        <v-card-title>
+          {{ title }}
+        </v-card-title>
+        <v-card-text>
+          <v-row
+            class="mx-auto"
+            justify="space-around"
+            style="max-width: 500px;"
           >
-            <base-image :image.sync="image" />
-          </v-col>
-
-          <v-col
-            cols="12"
-            md="6"
+            <v-col
+              cols="auto"
+              class="text-center"
+            >
+              <base-image :image.sync="image" />
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="productData.name"
+                :rules="validation_rules_name"
+                label="Nombre"
+                dense
+                outlined
+              />
+              <v-text-field
+                v-model="productData.code"
+                :rules="validation_rules_code"
+                label="Código"
+                dense
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+            >
+              <v-select
+                v-model="productData.category_id"
+                :rules="validation_rules_category"
+                :items="type_categories"
+                item-value="id"
+                item-text="name"
+                label="Categorías"
+                dense
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="productData.price_purchase"
+                :rules="validation_rules_price"
+                label="Precio de compra"
+                dense
+                type="number"
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="productData.price_sale"
+                :rules="validation_rules_price"
+                label="Precio de venta"
+                dense
+                type="number"
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="productData.stock"
+                :rules="validation_rules_stock"
+                label="Stock"
+                dense
+                type="number"
+                outlined
+              />
+            </v-col>
+            <v-col
+              v-if="indexEdit !== -1"
+              cols="12"
+              md="6"
+            >
+              {{ productData.status }}
+              <v-select
+                v-model="productData.status"
+                :rules="validation_rules_status"
+                :items="status"
+                item-value="value"
+                item-text="name"
+                label="Status"
+                dense
+                outlined
+              />
+            </v-col>
+            <v-col
+              cols="12"
+            >
+              <v-textarea
+                v-model="productData.comment"
+                :rules="validation_rules_comment"
+                label="Descripción"
+                dense
+                outlined
+              />
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            :disabled="!valid || loadingState"
+            :loading="loadingState"
+            @click="saveItem()"
           >
-            <base-text-field
-              label="Nombre"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            md="6"
-          >
-            <base-text-field
-              label="Categoría"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            md="6"
-          >
-            <base-text-field
-              label="Stock"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            md="6"
-          >
-            <base-text-field
-              label="Precio de compra"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-            md="6"
-          >
-            <base-text-field
-              label="Precio de venta"
-            />
-          </v-col>
-          <v-col
-            cols="12"
-          >
-            <base-text-field
-              label="Descrición"
-            />
-          </v-col>
-        </v-row>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn
-          color="primary"
-        >
-          Aceptar
-        </v-btn>
-      </v-card-actions>
+            Aceptar
+          </v-btn>
+        </v-card-actions>
+      </v-form>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+  import { validationRules } from '@/mixins/validationRules'
+  import { saveProductApi, updateProductApi, getCategoriesApi } from '@/api/services'
+  import { mapMutations, mapState } from 'vuex'
   export default {
     name: 'AdminProductAdd',
+    mixins: [validationRules],
     props: {
       dialog: {
         type: Boolean,
         default: false,
       },
+      products: {
+        type: Array,
+        default: () => ([]),
+      },
+      product: {
+        type: Object,
+        default: () => ({}),
+      },
+      indexEdit: {
+        type: Number,
+        default: -1,
+      },
     },
     data () {
       return {
+        valid: true,
         image: null,
+        type_categories: [],
+        status: [
+          { name: 'Activo', value: 'A' },
+          { name: 'Inactivo', value: 'I' },
+        ],
+        productData: {
+          id: null,
+          name: '',
+          code: '',
+          category_id: null,
+          stock: 0,
+          status: '',
+          price_sale: 0,
+          price_purchase: 0,
+          comment: '',
+        },
       }
     },
     computed: {
-      dialogEvent: {
+      ...mapState(['loadingState']),
+      password () {
+        return this.productData.password
+      },
+      validate () {
+        return this.$refs.form.validate()
+      },
+      indexEditComputed: {
+        get () {
+          return this.indexEdit
+        },
+        set (value) {
+          this.$emit('update:indexEdit', value)
+        },
+      },
+      dialogComputed: {
         get () {
           return this.dialog
         },
@@ -114,18 +223,86 @@
           this.$emit('update:dialog', value)
         },
       },
+      productsComputed: {
+        get () {
+          return this.products
+        },
+        set (value) {
+          this.$emit('update:products', value)
+        },
+      },
+      productComputed: {
+        get () {
+          return this.productData
+        },
+        set (value) {
+          this.$emit('update:product', value)
+        },
+      },
+      title () {
+        return this.indexEditComputed === -1 ? 'Agregar producto' : 'Editar producto'
+      },
     },
     watch: {
       dialog (value) {
         value || this.close()
       },
+      indexEdit (value) {
+        if (value !== -1) Object.assign(this.productData, this.product)
+      },
+    },
+    created () {
+      this.getCategories()
     },
     methods: {
+      ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       close () {
         this.$nextTick(() => {
-          this.dialogEvent = false
+          this.dialogComputed = false
           this.image = null
+          this.$refs.form.reset()
+          this.indexEditComputed = -1
+          this.productComputed = {}
+          this.SET_LOADING(false)
         })
+      },
+      async getCategories () {
+        const serviceResponse = await getCategoriesApi()
+        if (serviceResponse.ok) {
+          this.type_categories = serviceResponse.data
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+      },
+      async saveItem () {
+        if (this.validate) {
+          this.SET_LOADING(true)
+          console.log(this.productData)
+          const serviceResponse = this.indexEditComputed === -1 ? await saveProductApi(this.productData)
+            : await updateProductApi(this.productData, this.productData.id)
+          if (serviceResponse.ok) {
+            this.indexEditComputed === -1 ? this.productsComputed.push(serviceResponse.data) : Object.assign(this.productsComputed[this.indexEditComputed], serviceResponse.data)
+            this.SET_ALERT({
+              text: serviceResponse.message,
+              color: 'success',
+            })
+            this.close()
+          } else {
+            this.SET_ALERT({
+              text: serviceResponse.message.text,
+              color: 'warning',
+            })
+          }
+          this.SET_LOADING(false)
+        } else {
+          this.SET_ALERT({
+            text: 'Formulario inválido',
+            color: 'warning',
+          })
+        }
       },
     },
   }

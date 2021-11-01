@@ -141,10 +141,10 @@
                 title: 'Empleados',
                 to: 'empleado',
               },
-              {
-                title: 'Roles y permisos',
-                to: 'rol',
-              },
+              // {
+              //   title: 'Roles y permisos',
+              //   to: 'rol',
+              // },
             ],
           },
           {
@@ -156,7 +156,7 @@
         profile: {
           icon: 'mdi-account',
           title: 'Jhon Contreras',
-          to: 'perfil',
+          to: '/admin/perfil',
         },
       }
     },
@@ -187,7 +187,7 @@
         return {
           ...item,
           children: item.children ? item.children.map(this.mapItem) : undefined,
-          title: this.$t(item.title),
+          title: item.title,
         }
       },
     },

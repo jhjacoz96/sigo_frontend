@@ -56,9 +56,13 @@
     <v-btn
       min-width="0"
       text
+      @click="logout"
     >
       <v-icon>mdi-power</v-icon>
     </v-btn>
+    <shared-confirm-logout
+      :dialog.sync="dialogLogout"
+    />
   </v-app-bar>
 </template>
 
@@ -67,7 +71,7 @@
   // import { VHover, VListItem } from 'vuetify/lib'
 
   // Utilities
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState, mapMutations, mapActions } from 'vuex'
 
   export default {
     name: 'DashboardCoreAppBar',
@@ -96,6 +100,7 @@
           })
         },
       }, */
+      SharedConfirmLogout: () => import('@/views/components/private/shared/SharedConfirmLogout'),
     },
 
     props: {
@@ -106,6 +111,7 @@
     },
 
     data: () => ({
+      dialogLogout: false,
       notifications: [
         'Mike John Responded to your email',
         'You have 5 new tasks',
@@ -129,6 +135,10 @@
       ...mapMutations({
         setDrawer: 'SET_DRAWER',
       }),
+      ...mapActions('auth', ['logoutAction']),
+      logout () {
+        this.dialogLogout = true
+      },
     },
   }
 </script>

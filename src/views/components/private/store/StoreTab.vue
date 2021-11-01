@@ -6,8 +6,8 @@
       show-arrows
     >
       <v-slide-item
-        v-for="d in items"
-        :key="d.id"
+        v-for="category in categories"
+        :key="category.slug"
         v-slot:default="{ active }"
       >
         <v-btn
@@ -21,9 +21,15 @@
           retain-focus-on-click
           :text="!active"
           active-class="grey lighten-4"
-          @click="setActive(d.id)"
+          @click="setActive(category.slug)"
         >
-          {{ d.name }}
+          {{ category.name }}
+          <!-- <v-chip
+              class="secondary ml-2 white--text"
+              x-small
+            >
+              1
+            </v-chip> -->
         </v-btn>
       </v-slide-item>
     </v-slide-group>
@@ -31,19 +37,24 @@
 </template>
 
 <script>
+  import { mapMutations } from 'vuex'
+  import {
+    getCategoriesApi,
+  } from '@/api/services'
   export default {
+    name: 'StoreTab',
     data () {
       return {
-        items: [
-          { name: 'Todos', id: 1 },
-          { name: 'Pinturas', id: 2 },
-          { name: 'Herramientas', id: 3 },
-          { name: 'Utencilios para pintar', id: 4 },
-        ],
-        activeDay: 2,
+        categories: [],
+        activeDay: 0,
+        categoryActive: '',
       }
     },
+    created () {
+      this.getCategories()
+    },
     methods: {
+      ...mapMutations(['SET_ALERT']),
       prev () {
         if (this.activeDay === 0) return
         this.activeDay = this.activeDay - 1
@@ -51,8 +62,25 @@
       next () {
         this.activeDay = this.activeDay + 1
       },
-      setActive (id) {
-        this.activeDay = this.items.findIndex(d => d.id === id)
+      setActive (slug) {
+        this.activeDay = this.categories.findIndex(c => c.slug === slug)
+        this.$emit('click:active', slug)
+      },
+      async getCategories () {
+        const serviceResponse = await getCategoriesApi()
+        if (serviceResponse.ok) {
+          this.categories = serviceResponse.data
+          this.categories.unshift({
+            id: 0,
+            name: 'Todos',
+            slug: '',
+          })
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
       },
     },
   }

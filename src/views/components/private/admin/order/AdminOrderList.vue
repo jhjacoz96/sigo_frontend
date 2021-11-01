@@ -7,109 +7,215 @@
           label="Buscar"
         />
       </v-card-title>
-
-      <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-center title">
-                Código
-              </th>
-              <th class="text-center title">
-                Cliente
-              </th>
-              <th class="text-center title">
-                Monto total
-              </th>
-              <th class="text-center title">
-                Fecha
-              </th>
-              <th class="text-center title">
-                Acciones
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(item, i) in orders"
-              :key="i"
-              style="cursor: pointer;"
-              @click="openDetail(item)"
-            >
-              <td>{{ item.code }}</td>
-              <td>{{ item.autor }}</td>
-              <td>{{ item.total | price }}</td>
-              <td>{{ item.fecha }}</td>
-              <td>
-                <v-btn
-                  color="pink"
-                  x-small
-                  fab
-                  @click="confirmOrder($event, item)"
-                >
-                  <v-icon>mdi-cancel</v-icon>
-                </v-btn>
-                <v-btn
-                  class="ml-1"
-                  color="success"
-                  x-small
-                  fab
-                  @click="confirmOrder($event, item)"
-                >
-                  <v-icon>mdi-check</v-icon>
-                </v-btn>
-                <v-btn
-                  class="ml-1"
-                  color="warning"
-                  x-small
-                  fab
-                  @click="confirmOrder($event, item)"
-                >
-                  <v-icon>mdi-edit</v-icon>
-                </v-btn>
-              </td>
-            </tr>
-          </tbody>
+      <v-data-table
+        :headers="headers"
+        :loading="loadingState"
+        :items="orders"
+        :options.sync="options"
+        :server-items-length="totalItems"
+        :page-count="numberOfPages"
+        :footer-props="footerProps"
+        :items-per-page="5"
+        disable-sort
+      >
+        <template v-slot:item.created_at="{ item }">
+          {{ moment(item.created_at).format('D-M-YYYY') }}
         </template>
-      </v-simple-table>
+        <template v-slot:item.accion="{ item }">
+          <v-btn
+            :disabled="loadingState"
+            class="ml-1"
+            color="primary"
+            small
+            icon
+            @click="showItem(item)"
+          >
+            <v-icon>mdi-eye</v-icon>
+          </v-btn>
+          <v-btn
+            v-if="item.status === 'verificar' || item.status === 'proceso'"
+            :disabled="loadingState"
+            class="ml-1"
+            color="primary"
+            small
+            icon
+            @click="editStatusItem(item)"
+          >
+            <v-icon>mdi-check</v-icon>
+          </v-btn>
+          <v-btn
+            v-if="item.status === 'verificar'"
+            :disabled="loadingState"
+            class="ml-1"
+            color="primary"
+            small
+            icon
+            @click="editItem(item)"
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn
+            v-if="item.status === 'verificar'"
+            :disabled="loadingState"
+            color="primary"
+            small
+            icon
+            @click="deleteItem(item)"
+          >
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </template>
+      </v-data-table>
+      <admin-order-confirm-delete
+        :orders.sync="orders"
+        :dialog-delete.sync="dialogDelete"
+        :order.sync="order"
+      />
+      <admin-order-detail
+        :dialog.sync="dialogShow"
+        :order.sync="order"
+      />
     </v-card>
   </v-container>
 </template>
 
  <script>
+  import { pagination } from '@/mixins/pagination'
+  import { getOrdersAdminApi, updateOrderAdminApi } from '@/api/services'
+  import { mapMutations, mapState } from 'vuex'
   export default {
     name: 'AdminOrderList',
+    components: {
+      AdminOrderConfirmDelete: () => import('./AdminOrderConfirmDelete'),
+      AdminOrderDetail: () => import('./AdminOrderDetail'),
+    },
+    mixins: [pagination],
     data () {
       return {
-        orders: [
+        orders: [],
+        headers: [
           {
-            code: 'FF-110',
-            autor: 'Jhon Contreras',
-            total: 10000,
-            fecha: '10/10-2021',
+            text: 'Código',
+            align: 'center',
+            value: 'code',
           },
           {
-            code: 'FF-112',
-            autor: 'Jhon Contreras',
-            total: 10000,
-            fecha: '10/10-2021',
+            text: 'Cliente',
+            align: 'center',
+            value: 'client.name',
           },
           {
-            code: 'FF-113',
-            autor: 'Jhon Contreras',
-            total: 10000,
-            fecha: '10/10-2021',
+            text: 'Monto total',
+            align: 'center',
+            value: 'total',
           },
+          {
+            text: 'Tipo de pago',
+            align: 'center',
+            value: 'type_payment',
+          },
+          {
+            text: 'Fecha',
+            align: 'center',
+            value: 'created_at',
+          },
+          { text: 'Acciones', sortable: false, filterable: false, value: 'accion' },
         ],
+        itemsPerPage: 5,
+        order: {
+          code: null,
+          client: undefined,
+          type_payment: '',
+          status: '',
+          total: 0,
+          created_at: '',
+          products: [],
+        },
+        dialogDelete: false,
+        dialogShow: false,
       }
     },
+    computed: {
+      ...mapState(['loadingState']),
+    },
+    watch: {
+      options: {
+        deep: true,
+        handler () {
+          this.getOrders('verificar')
+        },
+      },
+    },
     methods: {
+      ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       openDetail (order) {
         // console.log(order)
       },
-      confirmOrder (event, order) {
+      confirmItem (event, order) {
         event.stopPropagation()
         // console.log(order)
+      },
+      async getOrders (status) {
+        const params = {
+          status,
+          sizePage: this.options.itemsPerPage,
+          page: this.options.page,
+        }
+        this.SET_LOADING(true)
+        this.orders = []
+        const serviceResponse = await getOrdersAdminApi(params)
+        if (serviceResponse.ok) {
+          this.orders = serviceResponse.data.orders
+          this.paginate(serviceResponse.data.paginate)
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+        this.SET_LOADING(false)
+      },
+      deleteItem (item) {
+        this.dialogDelete = true
+        this.order = item
+      },
+      async editStatusItem (item) {
+        const data = item
+        data.status = this.getStatusUtdate(data.status)
+        const serviceResponse = await updateOrderAdminApi(item.id, item)
+        if (serviceResponse.ok) {
+          var index = this.orders.indexOf(item)
+          this.orders.splice(index, 1)
+          this.SET_ALERT({
+            text: serviceResponse.message,
+            color: 'success',
+          })
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+        this.SET_LOADING(false)
+      },
+      getStatusUtdate (status) {
+        var res
+        switch (status) {
+          case 'verificar':
+            res = 'proceso'
+            break
+
+          default:
+            res = 'enviado'
+        }
+        return res
+      },
+      editItem (item) {
+        this.$router.push(`/admin/pedido/editar/${item.id}`)
+      },
+      showItem (item) {
+        this.order = item
+        this.dialogShow = true
       },
     },
   }

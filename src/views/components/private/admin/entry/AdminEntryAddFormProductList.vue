@@ -2,45 +2,58 @@
   <div>
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="productsComputed"
       :items-per-page="5"
     >
       <template v-slot:item.accion="{ item }">
         <v-btn
           icon
-          @click="item"
+          @click="deleteItem(item)"
         >
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </template>
       <template v-slot:item.quantify="{ item }">
-        <v-text-field
-          v-model="item.quantify"
-          dense
-          outlined
-        />
+        <v-form
+          ref="form"
+          v-model="valid[getIndex(item)]"
+          lazy-validation
+        >
+          <div class="ma-auto">
+            <v-text-field
+              v-model="item.quantity"
+              :rules="validation_rules_quantity"
+              outlined
+              type="number"
+              dense
+            />
+          </div>
+        </v-form>
+      </template>
+      <template v-slot:item.sub_total="{ item }">
+        {{ (item.quantity * item.price_purchase) | price }}
       </template>
     </v-data-table>
-    <v-card>
-      <v-card-title>
-        Resumen <v-spacer />
-      </v-card-title>
-      <v-card-text class="mt-3">
-        <div class="d-flex justify-space-between">
-          <div>Total</div>
-          <div class="grey--text">
-            600
-          </div>
-        </div>
-      </v-card-text>
-    </v-card>
   </div>
 </template>
 <script>
+  import { validationRules } from '@/mixins/validationRules'
   export default {
-    name: 'AdminOrderAddFormProductList',
+    name: 'AdminEntryAddFormProductList',
+    mixins: [validationRules],
+    props: {
+      products: {
+        type: Array,
+        default: () => ([]),
+      },
+      validate: {
+        type: Boolean,
+        default: false,
+      },
+    },
     data () {
       return {
+        valid: [],
         headers: [
           {
             text: 'Producto',
@@ -48,25 +61,49 @@
             value: 'name',
           },
           { text: 'Cantidad', value: 'quantify' },
-          { text: 'Precio', value: 'price' },
-          { text: 'Subtotal', value: 'subtotal' },
+          { text: 'Precio de compra', value: 'price_purchase' },
+          { text: 'Subtotal', value: 'sub_total' },
           { text: 'Acciones', value: 'accion' },
         ],
-        desserts: [
-          {
-            name: 'Pintura',
-            quantify: 2,
-            price: 159,
-            subtotal: 300,
-          },
-          {
-            name: 'Lija',
-            quantify: 1,
-            price: 159,
-            subtotal: 300,
-          },
-        ],
       }
+    },
+    computed: {
+      productsComputed: {
+        get () {
+          return this.products
+        },
+        set (value) {
+          this.$emit('update:products', value)
+        },
+      },
+      validateComputed: {
+        get () {
+          return this.validate
+        },
+        set (value) {
+          this.$emit('update:validate', value)
+        },
+      },
+    },
+    watch: {
+      valid: {
+        deep: true,
+        handler (value) {
+          this.validateComputed = !value.some(item => item === false)
+        },
+      },
+    },
+    methods: {
+      getIndex (item) {
+        return this.productsComputed.indexOf(item)
+      },
+      validateForm () {
+        return this.validateComputed
+      },
+      deleteItem (item) {
+        var index = this.productsComputed.indexOf(item)
+        this.productsComputed.splice(index, 1)
+      },
     },
   }
 </script>

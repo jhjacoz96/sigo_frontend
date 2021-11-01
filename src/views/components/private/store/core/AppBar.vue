@@ -53,29 +53,50 @@
         </v-btn>
       </template>
     </v-text-field> -->
-    <v-btn
+    <!-- <v-btn
       min-width="0"
       text
       to="/tienda/buscar"
     >
       <v-icon>mdi-magnify</v-icon>
-    </v-btn>
+    </v-btn> -->
     <div class="mx-1" />
     <v-btn
+      v-if="countCartGetter > 0"
       min-width="0"
       text
-      to="/tienda/favorito"
+      to="/tienda/carrito"
     >
-      <v-icon>mdi-heart</v-icon>
+      <v-badge
+        color="primary"
+        overlap
+      >
+        <template v-slot:badge>
+          <span class="caption">{{ countCartGetter }}</span>
+        </template>
+
+        <v-icon>mdi-cart</v-icon>
+      </v-badge>
     </v-btn>
-    <div class="mx-1" />
     <v-btn
+      v-else
       min-width="0"
       text
       to="/tienda/carrito"
     >
       <v-icon>mdi-cart</v-icon>
     </v-btn>
+    <div class="mx-1" />
+    <v-btn
+      min-width="0"
+      text
+      @click="logout"
+    >
+      <v-icon>mdi-power</v-icon>
+    </v-btn>
+    <shared-confirm-logout
+      :dialog.sync="dialogLogout"
+    />
   </v-app-bar>
 </template>
 
@@ -84,8 +105,7 @@
   // import { VHover, VListItem } from 'vuetify/lib'
 
   // Utilities
-  import { mapState, mapMutations } from 'vuex'
-
+  import { mapState, mapMutations, mapActions, mapGetters } from 'vuex'
   export default {
     name: 'DashboardCoreAppBar',
 
@@ -113,8 +133,8 @@
           })
         },
       }, */
+      SharedConfirmLogout: () => import('@/views/components/private/shared/SharedConfirmLogout'),
     },
-
     props: {
       value: {
         type: Boolean,
@@ -123,13 +143,7 @@
     },
 
     data: () => ({
-      notifications: [
-        'Mike John Responded to your email',
-        'You have 5 new tasks',
-        `You're now friends with Andrew`,
-        'Another Notification',
-        'Another one',
-      ],
+      dialogLogout: false,
       profile: [
         { title: 'Profile' },
         { title: 'Settings' },
@@ -137,15 +151,33 @@
         { title: 'Log out' },
       ],
     }),
-
     computed: {
       ...mapState(['drawer']),
+      ...mapState('cart', ['countCartState']),
+      ...mapGetters('cart', ['countCartGetter']),
     },
-
+    created () {
+      this.getCart()
+    },
     methods: {
+      ...mapMutations(['SET_ALERT']),
       ...mapMutations({
         setDrawer: 'SET_DRAWER',
       }),
+      ...mapActions('cart', ['getCartAction']),
+      ...mapActions('auth', ['logoutAction']),
+      logout () {
+        this.dialogLogout = true
+      },
+      async getCart () {
+        const serviceResponse = await this.getCartAction()
+        if (!serviceResponse.ok) {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+      },
     },
   }
 </script>

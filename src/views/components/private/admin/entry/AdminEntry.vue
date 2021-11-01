@@ -10,7 +10,7 @@
         </div>
       </template>
       <v-btn
-        color="secondary"
+        color="primary"
         top
         right
         absolute

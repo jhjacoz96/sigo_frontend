@@ -9,21 +9,27 @@
     @click:next="next"
     @click:prev="tab--"
   >
+    {{ valid }}
     <v-tab-item class="pb-12">
-      <admin-order-add-form-general :city.sync="city" />
+      <admin-order-add-form-general
+        ref="adminOrderAddFormGeneral"
+        :order.sync="order"
+        :validate.sync="valid[0]"
+      />
     </v-tab-item>
-
     <v-tab-item class="pb-12">
-      <admin-order-add-form-product :city.sync="city" />
-    </v-tab-item>
-
-    <v-tab-item class="pb-12">
-      dddd
+      <admin-order-add-form-product
+        ref="adminOrderAddFormProduct"
+        :order.sync="order"
+        :validate.sync="valid[1]"
+      />
     </v-tab-item>
   </base-material-wizard>
 </template>
 
 <script>
+  import { mapMutations, mapState } from 'vuex'
+  import { saveOrderApi, showOrderAdminApi, updateOrderAdminApi, getLastIndexOrderAdminApi } from '@/api/services'
   export default {
     name: 'AdminOrderAddForm',
     components: {
@@ -31,86 +37,108 @@
       AdminOrderAddFormProduct: () => import('./AdminOrderAddFormProduct'),
     },
     data: () => ({
-      order: 'ddd',
-      account: [],
-      accounts: [
-        {
-          icon: 'mdi-pencil',
-          type: 'design',
-        },
-        {
-          icon: 'mdi-code-tags',
-          type: 'code',
-        },
-        {
-          icon: 'mdi-laptop',
-          type: 'develop',
-        },
-      ],
-      address: '',
-      city: 'caracas',
-      email: '',
-      first: '',
-      image: null,
-      last: '',
-      state: '',
-      states: [
-        'Alabama', 'Alaska', 'American Samoa', 'Arizona',
-        'Arkansas', 'California', 'Colorado', 'Connecticut',
-        'Delaware', 'District of Columbia', 'Federated States of Micronesia',
-        'Florida', 'Georgia', 'Guam', 'Hawaii', 'Idaho',
-        'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
-        'Louisiana', 'Maine', 'Marshall Islands', 'Maryland',
-        'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
-        'Missouri', 'Montana', 'Nebraska', 'Nevada',
-        'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
-        'North Carolina', 'North Dakota', 'Northern Mariana Islands', 'Ohio',
-        'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico',
-        'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee',
-        'Texas', 'Utah', 'Vermont', 'Virgin Island', 'Virginia',
-        'Washington', 'West Virginia', 'Wisconsin', 'Wyoming',
-      ],
-      street: '',
+      valid: [true, false],
+      dialog: false,
+      order: {
+        type_payment: '',
+        code: 0,
+        client_id: null,
+        total: 0,
+        products: [],
+      },
       tab: 0,
       tabs: ['Datos generales', 'Carrito'],
     }),
     computed: {
-      stringAccount () {
-        return this.account.join(',')
-      },
+      ...mapState(['loadingState']),
       scope () {
         if (this.tab === 0) return 'Datos generales'
         return 'Carrito'
       },
       availableSteps () {
         const steps = [0]
-
-        steps.push(1)
-
-        steps.push(2)
-
+        if (this.valid[0]) steps.push(1)
+        if (
+          this.valid[1] &&
+          steps.includes(0)
+        ) {
+          steps.push(2)
+        }
         return steps
       },
     },
-
+    created () {
+      if (this.$route.params.id) {
+        this.getOrder()
+      } else {
+        this.getLastIndexOrder()
+      }
+    },
     methods: {
+      ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       next () {
-        this.validateForm(this.scope).then(item => {
-          if (!item) return
-
-          if (this.tab === this.tabs.length - 1) {
-            alert('Form finished')
-          } else {
-            this.tab++
-          }
-        })
+        var v = this.validateCurrentForm(this.getRefComponent())
+        if (v) {
+          this.validateForm(this.scope).then(async item => {
+            if (!item) return
+            if (this.tab === this.tabs.length - 1) {
+              this.SET_LOADING(true)
+              const serviceResponse = this.$route.params.id ? await updateOrderAdminApi(this.order.id, this.order) : await saveOrderApi(this.order)
+              if (serviceResponse.ok) {
+                this.SET_ALERT({
+                  text: serviceResponse.message,
+                  color: 'success',
+                })
+                this.$router.push('/admin/pedido')
+              } else {
+                this.SET_ALERT({
+                  text: serviceResponse.message.text,
+                  color: 'warning',
+                })
+              }
+              this.SET_LOADING(false)
+            } else {
+              this.tab++
+            }
+          })
+        }
       },
-      onChange (val) {
-        const value = val.target.files[0]
-
-        if (!value) return (this.image = null)
-
-        this.image = URL.createObjectURL(value)
+      async getLastIndexOrder () {
+        const serviceResponse = await getLastIndexOrderAdminApi()
+        if (serviceResponse.ok) {
+          this.order.code = 'P-000' + (parseInt(serviceResponse.data) + 1)
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+      },
+      async getOrder () {
+        const serviceResponse = await showOrderAdminApi(this.$route.params.id)
+        if (serviceResponse.ok) {
+          this.order = serviceResponse.data
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+      },
+      getRefComponent () {
+        var res
+        switch (this.tab) {
+          case 0:
+            res = 'adminOrderAddFormGeneral'
+            break
+          default:
+            res = 'adminOrderAddFormProduct'
+            break
+        }
+        return res
+      },
+      validateCurrentForm (refComponent) {
+        return this.$refs[refComponent].validateForm()
       },
       validateForm (scope) {
         return this.$validator.validateAll(scope)

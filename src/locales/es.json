@@ -31,7 +31,7 @@
   "rforms": "Formularios Regulares",
   "rtables": "Tablas Regulares",
   "rtl": "RTL",
-  "search": "Buscar",
+  "search": "Buscar por nombre, categoría ó código",
   "settings": "Opciones",
   "tables": "Tablas",
   "tabs": "Pestañas",
@@ -113,6 +113,26 @@
     "description":"Descripcion ",
     "status":"Estado",
     "actions":"Acciones"
+  },
+  "validate": {
+    "required": "El campo {attribute} es requerido.",
+    "email": "El campo {attribute} debe ser una dirección de correo válida.",
+    "password": {
+      "regex": "El campo {attribute} debe contener al menos una letra minúscula, al menos una letra mayuscula, al menos un dígito, un caracter especial @$!%*#?&-_",
+      "confirmed": "Confirmación de contraseña no coincide."
+    },
+    "min": {
+      "numeric": "El campo {attribute} debe ser al menos {min} dígitos.",
+      "string": "El campo {attribute} debe tener un  mínimo de {min} caracteres."
+    },
+    "quantity": {
+      "min": "El campo {attribute} debe ser mayor que {min}",
+      "max": "El campo {attribute} debe ser menor que {max}"
+    },
+    "max": {
+      "numeric": "El campo {attribute} debe un máximo de {max} dígitos.",
+      "string": "El campo {attribute} debe tener un  máximo de {max} caracteres."
+    }
   }
   
 }

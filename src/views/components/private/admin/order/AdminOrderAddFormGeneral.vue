@@ -1,39 +1,48 @@
 <template>
   <v-container class="justify-center">
-    <div class="text-center display-1 font-weight-light mb-6">
-      Comencemos con información básica
+    <!-- <div class="text-center display-1 font-weight-light mb-6">
+      Información general de del pedido
+    </div> -->
+    <div class="d-flex mb-1">
+      <div class="font-weight-medium mr-2">
+        CÓDIGO DE PEDIDO:
+      </div>
+      <div> {{ order.code }} </div>
     </div>
+    <v-divider />
     <v-row justify="center">
       <v-col
         cols="10"
         md="6"
       >
-        <v-text-field
-          value="10/10/2021"
-          label="fecha"
-          filled
-          solo
-        />
-      </v-col>
-      <v-col
-        cols="10"
-        md="6"
-      >
-        <v-autocomplete
-          v-model="model"
-          :items="items"
-          :loading="isLoading"
-          :search-input.sync="search"
-          solo
-          filled
-          hide-no-data
-          hide-selected
-          item-text="Description"
-          item-value="API"
-          label="Nombre del cliente"
-          placeholder="Ingrese el nombre del cliente"
-          return-object
-        />
+        <v-form
+          ref="form"
+          v-model="valid"
+          lazy-validation
+        >
+          <v-select
+            v-model="orderComputed.type_payment"
+            :rules="validation_rules_type_payment"
+            label="Tipo de pago"
+            outlined
+            :items="type_payments"
+          />
+          <v-autocomplete
+            v-model="orderComputed.client_id"
+            :disabled="$route.params.id ? true : false"
+            :rules="validation_rules_client"
+            :items="clients"
+            :loading="isLoading"
+            :search-input.sync="autocompleteClient"
+            outlined
+            hide-no-data
+            hide-selected
+            item-text="name"
+            item-value="id"
+            label="Nombre del cliente"
+            placeholder="Ingrese el documento de identidad..."
+          />
+        </v-form>
       </v-col>
     </v-row>
     <v-card
@@ -62,29 +71,48 @@
 </template>
 
 <script>
+  import { validationRules } from '@/mixins/validationRules'
+  import { getClientsApi } from '@/api/services'
+  import { mapMutations } from 'vuex'
   export default {
     name: 'AdminOrderAddFormClient',
+    mixins: [validationRules],
     props: {
-      city: {
-        type: String,
-        default: '',
+      order: {
+        type: Object,
+        default: () => ({}),
+      },
+      validate: {
+        type: Boolean,
+        default: () => ({}),
       },
     },
     data: () => ({
+      valid: true,
       descriptionLimit: 60,
       entries: [],
       isLoading: false,
       model: null,
-      search: null,
+      autocompleteClient: null,
+      clients: [],
       details: undefined,
+      type_payments: ['efectivo', 'transferencia', 'credito'],
     }),
     computed: {
-      changeCity: {
+      orderComputed: {
         get () {
-          return this.city
+          return this.order
         },
         set (value) {
-          this.$emit('update:city', value)
+          this.$emit('update:order', value)
+        },
+      },
+      validateComputed: {
+        get () {
+          return this.validate
+        },
+        set (value) {
+          this.$emit('update:validate', value)
         },
       },
       fields () {
@@ -106,7 +134,6 @@
         })
       },
     },
-
     watch: {
       model (val) {
         if (!val) this.details = []
@@ -117,7 +144,10 @@
           }
         })
       },
-      search (val) {
+      valid (val) {
+        this.validateComputed = val
+      },
+      /* autocompleteClient (val) {
         // Items have already been loaded
         if (this.items.length > 0) return
 
@@ -138,6 +168,26 @@
             // console.log(err)
           })
           .finally(() => (this.isLoading = false))
+      }, */
+    },
+    created () {
+      this.getClients()
+    },
+    methods: {
+      ...mapMutations(['SET_ALERT', 'SET_LOADING']),
+      async getClients () {
+        const serviceResponse = await getClientsApi()
+        if (serviceResponse.ok) {
+          this.clients = serviceResponse.data
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+      },
+      validateForm () {
+        return this.$refs.form.validate()
       },
     },
   }
