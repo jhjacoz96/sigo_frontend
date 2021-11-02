@@ -6,7 +6,7 @@
     <v-card-text>
       <div class="d-flex justify-space-between mx-5">
         <span class="subtitle-1 grey--text">Precio total:</span>
-        <span>{{ total }}</span>
+        <span>{{ total }} {{ currencyGetter }}</span>
       </div>
     </v-card-text>
     <v-card-text>
@@ -45,7 +45,7 @@
 
 <script>
   import { saveOrderApi } from '@/api/services'
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState, mapMutations, mapGetters } from 'vuex'
   export default {
     name: 'StoreCartSummary',
     props: {
@@ -69,6 +69,7 @@
     },
     computed: {
       ...mapState('auth', ['userState']),
+      ...mapGetters('auth', ['currencyGetter']),
       ...mapState(['loadingState']),
       total () {
         var t = 0

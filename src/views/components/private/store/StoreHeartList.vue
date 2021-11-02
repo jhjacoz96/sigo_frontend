@@ -2,6 +2,9 @@
   <v-data-table
     :headers="headers"
     :items="products"
+    :loading="loadingState"
+    :items-per-page="5"
+    disable-sort
   >
     <template v-slot:item.accion="{ item }">
       <v-btn
@@ -13,11 +16,14 @@
         <v-icon>mdi-cart-plus</v-icon>
       </v-btn>
     </template>
+    <template v-slot:item.price_sale="{ item }">
+      {{ item.product.price_sale }} {{ currencyGetter }}
+    </template>
   </v-data-table>
 </template>
 
 <script>
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   import {
     getFavoritesApi,
     addCartApi,
@@ -29,8 +35,8 @@
         products: [],
         headers: [
           { text: 'Producto', value: 'product.name' },
-          { text: 'Disponibilidad', value: 'product.stock' },
-          { text: 'Precio', value: 'product.price_sale' },
+          { text: 'Stock', value: 'product.stock' },
+          { text: 'Precio', value: 'price_sale' },
           { text: 'Acción', sortable: false, value: 'accion' },
         ],
       }
@@ -38,6 +44,7 @@
     computed: {
       ...mapState(['loadingState']),
       ...mapState('auth', ['userState']),
+      ...mapGetters('auth', ['currencyGetter']),
     },
     created () {
       this.getFavorites()
@@ -46,6 +53,7 @@
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       ...mapMutations('cart', ['SET_ITEM_CART']),
       async getFavorites () {
+        this.SET_LOADING(true)
         const serviceResponse = await getFavoritesApi()
         if (serviceResponse.ok) {
           this.products = serviceResponse.data
@@ -55,6 +63,7 @@
             color: 'warning',
           })
         }
+        this.SET_LOADING(false)
       },
       async addCart (item) {
         this.SET_LOADING(true)

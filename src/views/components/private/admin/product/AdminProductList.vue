@@ -16,6 +16,8 @@
         :search="search"
         :loading="loadingState"
         :items="productsComputed"
+        :items-per-page="5"
+        disable-sort
       >
         <template v-slot:item.accion="{ item }">
           <v-btn

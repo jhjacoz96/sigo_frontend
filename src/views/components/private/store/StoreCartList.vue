@@ -3,9 +3,12 @@
     <v-data-table
       :headers="headers"
       :items="productsComputed"
+      :loading="loadingState"
+      :items-per-page="5"
+      disable-sort
     >
       <template v-slot:item.price_sale="{ item }">
-        <span>{{ item.product.price_sale * item.quantity }}</span>
+        <span>{{ item.product.price_sale * item.quantity | price }} {{ currencyGetter }}</span>
       </template>
       <template v-slot:item.quantity="{ item }">
         <v-btn
@@ -43,7 +46,7 @@
 </template>
 
 <script>
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   import {
     getCartApi,
   } from '@/api/services'
@@ -76,6 +79,7 @@
     },
     computed: {
       ...mapState(['loadingState']),
+      ...mapGetters('auth', ['currencyGetter']),
       productsComputed: {
         get () {
           return this.products
@@ -91,6 +95,7 @@
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       async getCart () {
+        this.SET_LOADING(true)
         const serviceResponse = await getCartApi()
         if (serviceResponse.ok) {
           this.productsComputed = serviceResponse.data
@@ -100,6 +105,7 @@
             color: 'warning',
           })
         }
+        this.SET_LOADING(false)
       },
       deleteCart (item) {
         this.product = item

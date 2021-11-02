@@ -7,7 +7,7 @@
         </div>
         <span class="subtitle-1 grey--text d-block">{{ productComputed.category.name }}</span>
         <span class="subtitle-1 grey--text d-block">Stock: {{ productComputed.stock }}</span>
-        <span class="green--text h1">Precio: {{ productComputed.price_sale }}</span>
+        <span class="green--text h1">Precio: {{ productComputed.price_sale }} {{ currencyGetter }}</span>
       </template>
       <template v-slot:actions>
         <v-btn
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   import {
     saveFavoriteApi,
   } from '@/api/services'
@@ -61,6 +61,7 @@
     },
     computed: {
       ...mapState('auth', ['userState']),
+      ...mapGetters('auth', ['currencyGetter']),
       productComputed: {
         get () {
           return this.product
