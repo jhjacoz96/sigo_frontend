@@ -21,6 +21,9 @@
         <template v-slot:item.created_at="{ item }">
           {{ moment(item.created_at).format('D-M-YYYY') }}
         </template>
+        <template v-slot:item.total="{ item }">
+          {{ item.total }} {{ currencyGetter }}
+        </template>
         <template v-slot:item.accion="{ item }">
           <v-btn
             :disabled="loadingState"
@@ -82,7 +85,7 @@
  <script>
   import { pagination } from '@/mixins/pagination'
   import { getOrdersAdminApi, updateOrderAdminApi } from '@/api/services'
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   export default {
     name: 'AdminOrderList',
     components: {
@@ -105,14 +108,14 @@
             value: 'client.name',
           },
           {
-            text: 'Monto total',
-            align: 'center',
-            value: 'total',
-          },
-          {
             text: 'Tipo de pago',
             align: 'center',
             value: 'type_payment',
+          },
+          {
+            text: 'Monto total',
+            align: 'center',
+            value: 'total',
           },
           {
             text: 'Fecha',
@@ -137,6 +140,7 @@
     },
     computed: {
       ...mapState(['loadingState']),
+      ...mapGetters('auth', ['currencyGetter']),
     },
     watch: {
       options: {

@@ -22,14 +22,15 @@
       </v-card-title>
       <v-card-text class="text-center">
         <v-row
-          justify="center"
+          justify="space-between"
           align="center"
         >
           <v-col
             cols="6"
             sm="4"
+            class="text-start"
           >
-            <div class="title">
+            <div class="grey--text text--lighten-1">
               Código:
             </div>
             <div>{{ order.code }}</div>
@@ -37,8 +38,9 @@
           <v-col
             cols="6"
             sm="4"
+            class="text-start"
           >
-            <div class="title">
+            <div class="grey--text text--lighten-1">
               Cliente:
             </div>
             <div>{{ order.client ? order.client.name : '' }}</div>
@@ -46,8 +48,9 @@
           <v-col
             cols="6"
             sm="4"
+            class="text-start"
           >
-            <div class="title">
+            <div class="grey--text text--lighten-1">
               Tipo de pago:
             </div>
             <div>{{ order.type_payment }}</div>
@@ -55,8 +58,9 @@
           <v-col
             cols="6"
             sm="4"
+            class="text-start"
           >
-            <div class="title">
+            <div class="grey--text text--lighten-1">
               Estado:
             </div>
             <div>{{ order.status }}</div>
@@ -64,17 +68,19 @@
           <v-col
             cols="6"
             sm="4"
+            class="text-start"
           >
-            <div class="title">
+            <div class="grey--text text--lighten-1">
               Total:
             </div>
-            <div>{{ order.total }}</div>
+            <div>{{ order.total }}  {{ currencyGetter }}</div>
           </v-col>
           <v-col
             cols="6"
             sm="4"
+            class="text-start"
           >
-            <div class="title">
+            <div class="grey--text text--lighten-1">
               Fecha:
             </div>
             <div>{{ moment(order.created_at).format('D-M-YYYY') }}</div>
@@ -88,10 +94,15 @@
           disable-sort
         >
           <template v-slot:top>
-            Productos de la orden
+            <div class="grey--text text--lighten-1">
+              Productos de la orden
+            </div>
+          </template>
+          <template v-slot:item.price_sale="{ item }">
+            {{ item.price_sale }} {{ currencyGetter }}
           </template>
           <template v-slot:item.sub_total="{ item }">
-            {{ item.price_sale * item.quantity | price }}
+            {{ item.price_sale * item.quantity | price }} {{ currencyGetter }}
           </template>
         </v-data-table>
       </v-card-text>
@@ -99,6 +110,7 @@
   </v-dialog>
 </template>
 <script>
+  import { mapGetters } from 'vuex'
   export default {
     name: 'AdminOrderDetail',
     props: {
@@ -122,6 +134,7 @@
       }
     },
     computed: {
+      ...mapGetters('auth', ['currencyGetter']),
       orderFormat () {
         const keys = [
           {

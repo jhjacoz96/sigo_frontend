@@ -17,46 +17,50 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
       <v-card-title>
-        Detalles de pedido
+        Detalles de gasto
       </v-card-title>
       <v-card-text class="text-center">
         <v-row
-          justify="center"
+          justify="space-between"
           align="center"
         >
           <v-col
             cols="6"
             sm="4"
+            class="text-start"
           >
-            <div class="title">
-              Proveedor:
+            <div class="grey--text text--lighten-1">
+              <span>Nombre:</span>
             </div>
             <div>{{ expense.provider ? expense.provider.name : '' }}</div>
           </v-col>
           <v-col
             cols="6"
             sm="4"
+            class="text-start"
           >
-            <div class="title">
-              Tipo de pago:
+            <div class="grey--text text--lighten-1">
+              <span>Tipo de pago:</span>
             </div>
             <div>{{ expense.type_payment }}</div>
           </v-col>
           <v-col
             cols="6"
             sm="4"
+            class="text-start"
           >
-            <div class="title">
-              Total:
+            <div class="grey--text text--lighten-1">
+              <span>Total:</span>
             </div>
-            <div>{{ expense.total }}</div>
+            <div>{{ expense.total }}  {{ currencyGetter }}</div>
           </v-col>
           <v-col
             cols="6"
             sm="4"
+            class="text-start"
           >
-            <div class="title">
-              Fecha:
+            <div class="grey--text text--lighten-1">
+              <span>Fecha:</span>
             </div>
             <div>{{ moment(expense.created_at).format('D-M-YYYY') }}</div>
           </v-col>
@@ -66,12 +70,18 @@
         <v-data-table
           :headers="headers"
           :items="expense.products"
+          disable-sort
         >
           <template v-slot:top>
-            Productos del ingreso de compra
+            <div class="grey--text text--lighten-1">
+              Productos del gasto
+            </div>
           </template>
           <template v-slot:item.sub_total="{ item }">
-            {{ item.price_purchase * item.quantity | price }}
+            {{ item.price_purchase * item.quantity | price }} {{ currencyGetter }}
+          </template>
+          <template v-slot:item.price_purchase="{ item }">
+            {{ item.price_purchase }} {{ currencyGetter }}
           </template>
         </v-data-table>
       </v-card-text>
@@ -79,6 +89,7 @@
   </v-dialog>
 </template>
 <script>
+  import { mapGetters } from 'vuex'
   export default {
     name: 'AdminEntryDetail',
     props: {
@@ -136,6 +147,7 @@
         })
         return expenseValue
       },
+      ...mapGetters('auth', ['currencyGetter']),
     },
     watch: {
       dialog (value) {

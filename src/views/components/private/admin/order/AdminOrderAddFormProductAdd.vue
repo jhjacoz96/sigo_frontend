@@ -40,7 +40,11 @@
             :items="data"
             :search="search"
             :items-per-page="5"
+            disable-sort
           >
+            <template v-slot:item.price_sale="{ item }">
+              {{ item.price_Sale }} {{ currencyGetter }}
+            </template>
             <template v-slot:item.accion="{ item }">
               <v-btn
                 :disabled="existItem(item)"
@@ -82,6 +86,7 @@
         dialog: false,
         search: '',
         headers: [
+          { text: 'Código', align: 'center', value: 'code' },
           {
             text: 'Producto',
             align: 'center',
@@ -89,7 +94,6 @@
           },
           { text: 'Categoria', align: 'center', value: 'category.name' },
           { text: 'Precio  de venta', align: 'center', value: 'price_sale' },
-          { text: 'Código', align: 'center', value: 'code' },
           { text: 'Stock', align: 'center', value: 'stock' },
           { text: 'Acciones', align: 'center', sortable: false, value: 'accion' },
         ],
@@ -97,6 +101,7 @@
       }
     },
     computed: {
+      ...mapGetters('auth', ['currencyGetter']),
       ...mapState(['loadingState']),
       productsComputed: {
         get () {

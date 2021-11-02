@@ -147,8 +147,8 @@ const router = new Router({
           component: () => import('@/views/components/private/admin/provider/AdminProvider'),
         },
         {
-          name: 'Ingresos de compras',
-          path: 'ingreso',
+          name: 'Gastos',
+          path: 'gasto',
           component: () => import('@/views/components/private/admin/entry/AdminEntry'),
         },
         {

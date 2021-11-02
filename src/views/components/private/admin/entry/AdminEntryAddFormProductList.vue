@@ -1,9 +1,10 @@
 <template>
-  <div>
+  <div class="mt-2">
     <v-data-table
       :headers="headers"
       :items="productsComputed"
       :items-per-page="5"
+      disable-sort
     >
       <template v-slot:item.accion="{ item }">
         <v-btn
@@ -31,13 +32,17 @@
         </v-form>
       </template>
       <template v-slot:item.sub_total="{ item }">
-        {{ (item.quantity * item.price_purchase) | price }}
+        {{ (item.quantity * item.price_purchase) | price }} {{ currencyGetter }}
+      </template>
+      <template v-slot:item.price_purchase="{ item }">
+        {{ item.price_purchase }} {{ currencyGetter }}
       </template>
     </v-data-table>
   </div>
 </template>
 <script>
   import { validationRules } from '@/mixins/validationRules'
+  import { mapGetters } from 'vuex'
   export default {
     name: 'AdminEntryAddFormProductList',
     mixins: [validationRules],
@@ -68,6 +73,7 @@
       }
     },
     computed: {
+      ...mapGetters('auth', ['currencyGetter']),
       productsComputed: {
         get () {
           return this.products

@@ -6,7 +6,7 @@
     >
       <template v-slot:after-heading>
         <div class="font-weight-light card-title mt-2">
-          Ingresos de compras
+          Gastos
         </div>
       </template>
       <v-btn

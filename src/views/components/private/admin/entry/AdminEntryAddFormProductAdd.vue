@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn
-      color="secondary"
+      color="primary"
       :small="$vuetify.breakpoint.smAndDown"
       @click="dialog = !dialog"
     >
@@ -40,7 +40,11 @@
             :items="data"
             :search="search"
             :items-per-page="5"
+            disable-sort
           >
+            <template v-slot:item.price_purchase="{ item }">
+              {{ item.price_purchase }} {{ currencyGetter }}
+            </template>
             <template v-slot:item.accion="{ item }">
               <v-btn
                 :disabled="existItem(item)"
@@ -68,7 +72,7 @@
 
 <script>
   import { getProductsApi } from '@/api/services'
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   export default {
     name: 'AdminEntryAddFormProductAdd',
     props: {
@@ -98,6 +102,7 @@
     },
     computed: {
       ...mapState(['loadingState']),
+      ...mapGetters('auth', ['currencyGetter']),
       productsComputed: {
         get () {
           return this.products

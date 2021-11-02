@@ -114,8 +114,8 @@
             title: 'Compras',
             children: [
               {
-                title: 'Ingreso de compras',
-                to: 'ingreso',
+                title: 'Gastos',
+                to: 'gasto',
               },
               {
                 title: 'Proveedores',

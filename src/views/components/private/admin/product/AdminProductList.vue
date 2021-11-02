@@ -36,6 +36,12 @@
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </template>
+        <template v-slot:item.price_purchase="{ item }">
+          {{ item.price_purchase }} {{ currencyGetter }}
+        </template>
+        <template v-slot:item.price_sale="{ item }">
+          {{ item.price_sale }} {{ currencyGetter }}
+        </template>
       </v-data-table>
       <admin-product-delete
         :dialog-delete.sync="dialogDelete"
@@ -53,7 +59,7 @@
 </template>
 
 <script>
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   import { getProductsApi } from '@/api/services'
   export default {
     name: 'AdminProductList',
@@ -76,6 +82,16 @@
             value: 'name',
           },
           {
+            text: 'Precio de venta',
+            align: 'center',
+            value: 'price_sale',
+          },
+          {
+            text: 'Precio de compra',
+            align: 'center',
+            value: 'price_purchase',
+          },
+          {
             text: 'Stock',
             align: 'center',
             value: 'stock',
@@ -96,6 +112,7 @@
     },
     computed: {
       ...mapState(['loadingState']),
+      ...mapGetters('auth', ['currencyGetter']),
       productsComputed: {
         get () {
           return this.products

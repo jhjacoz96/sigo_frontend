@@ -4,7 +4,7 @@
     :available-steps="availableSteps"
     :items="tabs"
     class="mx-auto"
-    title="Realizar pedido"
+    :title="$route.params.id ? 'Editar gasto' : 'Realizar gasto'"
     icon="mdi-shopping"
     @click:next="next"
     @click:prev="tab--"

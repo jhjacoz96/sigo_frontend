@@ -21,7 +21,7 @@
         <div class="d-flex justify-space-between">
           <div>Total</div>
           <div class="grey--text">
-            {{ total | price }}
+            {{ total | price }} {{ currencyGetter }}
           </div>
         </div>
       </v-card-text>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import { validationRules } from '@/mixins/validationRules'
   export default {
     name: 'AdminEntryAddFormProduct',
@@ -49,6 +50,7 @@
       },
     },
     computed: {
+      ...mapGetters('auth', ['currencyGetter']),
       expenseComputed: {
         get () {
           return this.expense

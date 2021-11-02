@@ -18,8 +18,11 @@
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </template>
+      <template v-slot:item.price_sale="{ item }">
+        {{ item.price_sale | price }} {{ currencyGetter }}
+      </template>
       <template v-slot:item.sub_total="{ item }">
-        {{ (item.quantity * item.price_sale) | price }}
+        {{ (item.quantity * item.price_sale) | price }} {{ currencyGetter }}
       </template>
       <template v-slot:item.quantify="{ item }">
         <v-form
@@ -47,7 +50,7 @@
         <div class="d-flex justify-space-between">
           <div>Total</div>
           <div class="grey--text">
-            {{ total | price }}
+            {{ total | price }}  {{ currencyGetter }}
           </div>
         </div>
       </v-card-text>
@@ -56,6 +59,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   import { validationRules } from '@/mixins/validationRules'
   export default {
     name: 'AdminOrderAddFormProduct',
@@ -90,6 +94,7 @@
       }
     },
     computed: {
+      ...mapGetters('auth', ['currencyGetter']),
       orderComputed: {
         get () {
           return this.order
