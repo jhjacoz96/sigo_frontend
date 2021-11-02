@@ -94,7 +94,6 @@ Return statement should not contain assignment<template>
       ...mapMutations(['SET_LOADING', 'SET_ALERT']),
       async deleteItem () {
         this.SET_LOADING(true)
-        console.log(this.clientComputed)
         const serviceResponse = await deleteClientApi(this.clientComputed.id)
         if (serviceResponse.ok) {
           var index = this.clientsComputed.indexOf(this.clientComputed)

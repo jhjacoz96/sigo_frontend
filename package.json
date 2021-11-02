@@ -3,20 +3,21 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "dev": "vue-cli-service serve --open",
-    "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
+    "dev": "vue-cli-service serve --open",
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
     "now-start": "vue-cli-service serve",
-    "test:e2e": "vue-cli-service test:e2e",
-    "test:unit": "vue-cli-service test:unit"
+    "start": "vue-cli-service serve"
   },
   "dependencies": {
     "axios": "^0.23.0",
     "core-js": "^2.6.5",
     "dotenv": "^10.0.0",
     "moment": "^2.29.1",
+    "register-service-worker": "^1.7.1",
     "vue": "^2.6.10",
     "vue-i18n": "^8.14.0",
     "vue-router": "^3.0.3",
@@ -27,6 +28,7 @@
     "@vue/cli-plugin-babel": "^3.10.0",
     "@vue/cli-plugin-e2e-cypress": "^3.10.0",
     "@vue/cli-plugin-eslint": "^3.10.0",
+    "@vue/cli-plugin-pwa": "^4.5.15",
     "@vue/cli-plugin-unit-jest": "^3.10.0",
     "@vue/cli-service": "^3.10.0",
     "@vue/eslint-config-standard": "^4.0.0",

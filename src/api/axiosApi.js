@@ -26,7 +26,6 @@ export const apiHttp = async (method, endpoint, data, options = {}, loading = tr
     const [materializedPromise] = await Promise.all([servicePromise])
     serviceResponse = { ...materializedPromise.data }
   } catch (error) {
-    console.log(error.response)
     serviceResponse = buildErrorMessage(error)
   }
   return serviceResponse

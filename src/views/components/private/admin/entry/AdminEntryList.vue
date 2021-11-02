@@ -138,7 +138,6 @@
         this.SET_LOADING(true)
         this.expenses = []
         const serviceResponse = await getExpensesAdminApi(params)
-        console.log(serviceResponse)
         if (serviceResponse.ok) {
           this.expenses = serviceResponse.data.expenses
           this.paginate(serviceResponse.data.paginate)

@@ -98,9 +98,7 @@
         if (serviceResponse.ok) {
           var index = this.ordersComputed.indexOf(this.order)
           this.ordersComputed.splice(index, 1)
-          console.log(this.totalItems)
           this.totalItems--
-          console.log(this.totalItems)
           this.SET_ALERT({
             text: serviceResponse.message,
             color: 'success',

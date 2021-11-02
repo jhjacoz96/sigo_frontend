@@ -111,7 +111,6 @@
       async login () {
         this.SET_LOADING(true)
         const serviceResponse = await this.loginAction(this.user)
-        console.log(serviceResponse)
         if (serviceResponse.ok) {
           if (this.userState.modelAssociate === 'CLient') this.$router.push('/tienda')
           else this.$router.push('/admin')

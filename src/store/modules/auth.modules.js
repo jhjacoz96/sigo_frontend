@@ -40,7 +40,6 @@ export default {
     },
     UPDATE_ORGANIZATION (state, payload) {
       var o = state.organizationState
-      console.log(o)
       o = payload
       localStorage.setItem('organization', JSON.stringify(o))
     },
@@ -48,7 +47,6 @@ export default {
   actions: {
     async loginAction ({ commit }, payload) {
       const serviceResponse = await loginApi(payload)
-      console.log(serviceResponse)
       if (serviceResponse.ok === true) {
         commit('LOGIN_SUCCESS', serviceResponse.data)
       } else {

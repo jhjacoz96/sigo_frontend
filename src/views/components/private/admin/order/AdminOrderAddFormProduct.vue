@@ -126,7 +126,6 @@
       order: {
         deep: true,
         handler (value) {
-          console.log(this.total.toFixed(2))
           this.orderComputed.total = this.total.toFixed(2)
         },
       },

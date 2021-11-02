@@ -100,7 +100,6 @@
       },
       async getExpense () {
         const serviceResponse = await showExpenseAdminApi(this.$route.params.id)
-        console.log(serviceResponse)
         if (serviceResponse.ok) {
           this.expense = serviceResponse.data
         } else {

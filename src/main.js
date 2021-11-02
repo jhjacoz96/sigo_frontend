@@ -23,6 +23,7 @@ import vuetify from './plugins/vuetify'
 import i18n from './i18n'
 import filters from './helpers/filters'
 import moment from 'moment'
+import './registerServiceWorker'
 
 Vue.config.productionTip = false
 

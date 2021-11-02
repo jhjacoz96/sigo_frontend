@@ -72,7 +72,7 @@
 
 <script>
   import { getProductsApi } from '@/api/services'
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   export default {
     name: 'AdminOrderAddFormProductAdd',
     props: {

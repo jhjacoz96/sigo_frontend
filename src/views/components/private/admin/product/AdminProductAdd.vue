@@ -280,7 +280,6 @@
       async saveItem () {
         if (this.validate) {
           this.SET_LOADING(true)
-          console.log(this.productData)
           const serviceResponse = this.indexEditComputed === -1 ? await saveProductApi(this.productData)
             : await updateProductApi(this.productData, this.productData.id)
           if (serviceResponse.ok) {

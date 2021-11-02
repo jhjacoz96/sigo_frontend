@@ -23,9 +23,9 @@
         lazy-validation
       >
         <v-card-text>
-         <v-subheader>
-          Datos básicos
-         </v-subheader>
+          <v-subheader>
+            Datos básicos
+          </v-subheader>
           <v-row
             class="mx-auto"
             justify="space-around"
@@ -82,9 +82,9 @@
               />
             </v-col>
           </v-row>
-         <v-subheader>
-          Datos de ubicación
-         </v-subheader>
+          <v-subheader>
+            Datos de ubicación
+          </v-subheader>
           <v-row
             class="mx-auto"
             justify="space-around"
@@ -126,9 +126,9 @@
               />
             </v-col>
           </v-row>
-         <v-subheader>
-          Configuración general
-         </v-subheader>
+          <v-subheader>
+            Configuración general
+          </v-subheader>
           <v-row
             class="mx-auto"
             justify="space-around"
@@ -219,8 +219,7 @@
       dialog (value) {
         value || this.close()
         if (value) {
-            console.log(this.organizationState)
-            this.company = this.organizationState || this.company
+          this.company = this.organizationState || this.company
         }
       },
     },
