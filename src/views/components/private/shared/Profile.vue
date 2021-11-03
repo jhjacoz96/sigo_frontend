@@ -144,13 +144,22 @@
       return {
         dialogEdit: false,
         dialogPassword: false,
+        profile: {
+          id: null,
+          user_id: null,
+          name: '',
+          phone: '',
+          email: '',
+          document: '',
+          type_document_id: null,
+        },
       }
     },
     computed: {
       ...mapState('auth', ['userState']),
-      profile () {
-        return this.userState.profile
-      },
+    },
+    created() {
+      Object.assign(profile, this.userState.profile)
     },
     methods: {
       edit () {
