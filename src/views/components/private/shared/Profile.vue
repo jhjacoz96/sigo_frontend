@@ -159,7 +159,7 @@
       ...mapState('auth', ['userState']),
     },
     created() {
-      Object.assign(profile, this.userState.profile)
+      Object.assign(this.profile, this.userState.profile)
     },
     methods: {
       edit () {
