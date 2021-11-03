@@ -27,6 +27,7 @@ export default {
       localStorage.setItem('loggedIn', true)
       state.loggedInState = true
       state.userState = payload.user
+      state.organizationState = payload.organization
     },
     LOGIN_FAIL (state, payload) {
       state.userState = null
