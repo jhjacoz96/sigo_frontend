@@ -85,8 +85,7 @@
       ...mapMutations(['SET_LOADING', 'SET_ALERT']),
       ...mapMutations('cart', ['REMOVE_CART']),
       async saveOrder () {
-        this.$refs.form.validate()
-        if (this.valid) {
+        if (this.$refs.form.validate()) {
           this.SET_LOADING(true)
           this.data.client_id = this.userState.profile.id
           this.data.total = this.total.toFixed(2)

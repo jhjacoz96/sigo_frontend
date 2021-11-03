@@ -187,7 +187,7 @@
     data () {
       return {
         dialogEdit: false,
-        companyDefault: {
+        company: {
           id: null,
           name: '',
           type_document_id: null,
@@ -202,9 +202,9 @@
     },
     computed: {
       ...mapState('auth', ['organizationState']),
-      company () {
-        return this.organizationState || this.companyDefault
-      },
+    },
+    created () {
+      Object.assign(this.company, this.organizationState)
     },
     methods: {
       edit () {
