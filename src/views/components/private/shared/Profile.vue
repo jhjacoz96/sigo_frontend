@@ -14,7 +14,7 @@
           Debe completar los datos de su perfil para poder continuar
         </div> -->
       </template>
-      <v-card-text>
+      <!-- <v-card-text>
         <v-container>
           <v-row
             justify="center"
@@ -107,7 +107,8 @@
             </v-col>
           </v-row>
         </v-container>
-      </v-card-text>
+      </v-card-text> -->
+      <pre> {{ profile }} </pre>
       <v-card-actions class="justify-end">
         <v-btn
           color="primary"
