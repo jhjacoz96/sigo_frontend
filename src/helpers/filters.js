@@ -1,5 +1,5 @@
 function price (value) {
-    return value.toFixed(2)
+    return parseFloat(value).toFixed(2)
 }
 
 export default {

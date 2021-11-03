@@ -14,7 +14,7 @@
           Debe completar los datos de su perfil para poder continuar
         </div> -->
       </template>
-      <!-- <v-card-text>
+      <v-card-text>
         <v-container>
           <v-row
             justify="center"
@@ -107,8 +107,7 @@
             </v-col>
           </v-row>
         </v-container>
-      </v-card-text> -->
-      <pre> {{ profile }} </pre>
+      </v-card-text>
       <v-card-actions class="justify-end">
         <v-btn
           color="primary"
@@ -124,9 +123,9 @@
         </v-btn>
       </v-card-actions>
     </base-material-card>
-    <!-- <profile-edit
+    <profile-edit
       :dialog.sync="dialogEdit"
-    /> -->
+    />
     <profile-edit-password
       :dialog.sync="dialogPassword"
     />

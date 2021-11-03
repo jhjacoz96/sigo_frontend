@@ -84,7 +84,7 @@
                   text: serviceResponse.message,
                   color: 'success',
                 })
-                this.$router.push('/admin/ingreso')
+                this.$router.push('/admin/gasto')
               } else {
                 this.SET_ALERT({
                   text: serviceResponse.message.text,
