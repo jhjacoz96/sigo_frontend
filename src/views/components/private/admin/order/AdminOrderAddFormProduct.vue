@@ -19,7 +19,7 @@
         </v-btn>
       </template>
       <template v-slot:item.price_sale="{ item }">
-        {{ item.price_sale | price }} {{ currencyGetter }}
+        {{ item.price_sale }} {{ currencyGetter }}
       </template>
       <template v-slot:item.sub_total="{ item }">
         {{ (item.quantity * item.price_sale) | price }} {{ currencyGetter }}

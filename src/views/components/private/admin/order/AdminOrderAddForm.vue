@@ -9,7 +9,6 @@
     @click:next="next"
     @click:prev="tab--"
   >
-    {{ valid }}
     <v-tab-item class="pb-12">
       <admin-order-add-form-general
         ref="adminOrderAddFormGeneral"
@@ -106,7 +105,7 @@
       async getLastIndexOrder () {
         const serviceResponse = await getLastIndexOrderAdminApi()
         if (serviceResponse.ok) {
-          this.order.code = 'P-000' + (parseInt(serviceResponse.data) + 1)
+          this.order.code = `P000${serviceResponse.data}`
         } else {
           this.SET_ALERT({
             text: serviceResponse.message.text,
