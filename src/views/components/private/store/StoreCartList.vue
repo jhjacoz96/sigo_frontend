@@ -7,8 +7,11 @@
       :items-per-page="5"
       disable-sort
     >
-      <template v-slot:item.price_sale="{ item }">
+      <template v-slot:item.sub_total="{ item }">
         <span>{{ item.product.price_sale * item.quantity | price }} {{ currencyGetter }}</span>
+      </template>
+      <template v-slot:item.price_sale="{ item }">
+        <span>{{ item.product.price_sale }} {{ currencyGetter }}</span>
       </template>
       <template v-slot:item.quantity="{ item }">
         <v-btn
@@ -66,9 +69,9 @@
       return {
         headers: [
           { text: 'Producto', value: 'product.name' },
-          { text: 'Precio', value: 'product.price_sale' },
+          { text: 'Precio', value: 'price_sale' },
           { text: 'Cantidad', value: 'quantity' },
-          { text: 'Sub total', value: 'price_sale' },
+          { text: 'Sub total', value: 'sub_total' },
           { text: 'Acción', sortable: false, value: 'accion' },
         ],
         product: {},

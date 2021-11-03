@@ -6,7 +6,7 @@
     <v-card-text>
       <div class="d-flex justify-space-between mx-5">
         <span class="subtitle-1 grey--text">Precio total:</span>
-        <span>{{ total }} {{ currencyGetter }}</span>
+        <span>{{ total | price }} {{ currencyGetter }}</span>
       </div>
     </v-card-text>
     <v-card-text>
@@ -89,7 +89,7 @@
         if (this.valid) {
           this.SET_LOADING(true)
           this.data.client_id = this.userState.profile.id
-          this.data.total = this.total
+          this.data.total = this.total.toFixed(2)
           this.data.products = this.products.map(item => {
             return {
               product_id: item.product_id,
