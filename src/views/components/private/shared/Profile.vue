@@ -124,9 +124,9 @@
         </v-btn>
       </v-card-actions>
     </base-material-card>
-    <profile-edit
+    <!-- <profile-edit
       :dialog.sync="dialogEdit"
-    />
+    /> -->
     <profile-edit-password
       :dialog.sync="dialogPassword"
     />
