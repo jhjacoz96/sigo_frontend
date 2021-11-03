@@ -152,6 +152,7 @@
           email: '',
           document: '',
           type_document_id: null,
+          type_document: null,
         },
       }
     },
