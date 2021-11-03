@@ -8,7 +8,7 @@
     >
       <template v-slot:after-heading>
         <div class="font-weight-light card-title mt-2">
-          Editar perfil
+          Perfil
         </div>
         <!-- <div class="red--text">
           Debe completar los datos de su perfil para poder continuar
@@ -158,7 +158,7 @@
     computed: {
       ...mapState('auth', ['userState']),
     },
-    created() {
+    created () {
       Object.assign(this.profile, this.userState.profile)
     },
     methods: {

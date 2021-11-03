@@ -47,7 +47,7 @@
                 v-model="user.password"
                 color="secondary"
                 rounded
-                :rules="validation_rules_password"
+                :rules="[v => !!v || 'El campo contraseña es requerido']"
                 outlined
                 label="Contraseña"
                 prepend-icon="mdi-lock"

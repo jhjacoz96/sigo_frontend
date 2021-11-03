@@ -194,6 +194,7 @@
           id: null,
           name: '',
           type_document_id: null,
+          type_document: null,
           document: '',
           phone: '',
           country: '',

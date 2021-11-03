@@ -15,7 +15,7 @@
         <v-icon>mdi-close</v-icon>
       </v-btn>
       <v-card-title>
-        Perfil
+        Editar Perfil
       </v-card-title>
       <v-form
         ref="form"
@@ -138,6 +138,7 @@
           email: '',
           document: '',
           type_document_id: null,
+          type_document: null,
         },
       }
     },
