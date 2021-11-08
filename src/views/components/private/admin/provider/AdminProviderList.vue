@@ -20,6 +20,7 @@
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
+            v-if="canPermissionsGetter('provider.edit')"
             color="primary"
             small
             icon
@@ -28,6 +29,7 @@
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
           <v-btn
+            v-if="canPermissionsGetter('provider.delete')"
             color="primary"
             small
             icon
@@ -54,7 +56,7 @@
 </template>
 
 <script>
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   import { getProvidersApi } from '@/api/services'
   export default {
     name: 'AdminProviderList',
@@ -102,6 +104,7 @@
     },
     computed: {
       ...mapState(['loadingState']),
+      ...mapGetters('auth', ['canPermissionsGetter']),
       providersComputed: {
         get () {
           return this.providers

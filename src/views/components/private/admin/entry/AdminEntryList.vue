@@ -30,6 +30,7 @@
         </template>
         <template v-slot:item.accion="{ item }">
           <v-btn
+            v-if="canPermissionsGetter('expense.show')"
             :disabled="loadingState"
             class="ml-1"
             color="primary"
@@ -40,6 +41,7 @@
             <v-icon>mdi-eye</v-icon>
           </v-btn>
           <v-btn
+            v-if="canPermissionsGetter('expense.edit')"
             :disabled="loadingState"
             class="ml-1"
             color="primary"
@@ -50,6 +52,7 @@
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
           <v-btn
+            v-if="canPermissionsGetter('expense.delete')"
             :disabled="loadingState"
             color="primary"
             small
@@ -112,7 +115,7 @@
     },
     computed: {
       ...mapState(['loadingState']),
-      ...mapGetters('auth', ['currencyGetter']),
+      ...mapGetters('auth', ['currencyGetter', 'canPermissionsGetter']),
     },
     watch: {
       options: {

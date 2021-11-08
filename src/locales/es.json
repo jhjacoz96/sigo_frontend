@@ -114,6 +114,74 @@
     "status":"Estado",
     "actions":"Acciones"
   },
+  "modules": {
+    "category": "Categorías",
+    "product": "Productos",
+    "expense": "Gastos",
+    "provider": "Proveedores",
+    "order": "Pedidos",
+    "client": "Clientes",
+    "employee": "Empleados",
+    "role": "Roles y permisos",
+    "organization": "Configurar organización"
+  },
+  "category": {
+    "index": "Acceso al módulo categorias",
+    "create": "Crear categoría",
+    "edit": "Editar categoría",
+    "delete": "Eliminar categoría"
+  },
+  "product": {
+    "index": "Acceso al módulo productos",
+    "create": "Crear producto",
+    "edit": "Editar producto",
+    "delete": "Eliminar producto"
+  },
+  "expense": {
+    "create": "Crear gasto",
+    "index": "Acceso al módulo gastos",
+    "edit": "Editar gasto",
+    "delete": "Eliminar gasto",
+    "show": "Mostrar gasto"
+  },
+  "order": {
+    "create": "Crear pedido",
+    "index": "Acceso al módulo pedidos",
+    "edit": "Editar pedido",
+    "delete": "Eliminar pedido",
+    "show": "Mostrar pedido",
+    "status_one": "Pedidos en espera",
+    "status_two": "Pedidos en procesos",
+    "status_three": "Pedidos enviados",
+    "verify": "Verificar pedido"
+  },
+  "provider": {
+    "create": "Crear proveedor",
+    "index": "Acceso al módulo proveedores",
+    "edit": "Editar proveedor",
+    "delete": "Eliminar proveedor"
+  },
+  "client": {
+    "create": "Crear cliente",
+    "index": "Acceso al módulo clientes",
+    "edit": "Editar cliente",
+    "delete": "Eliminar cliente"
+  },
+  "employee": {
+    "create": "Crear empleado",
+    "index": "Acceso al módulo empleados",
+    "edit": "Editar empleado",
+    "delete": "Eliminar empleado"
+  },
+  "role": {
+    "create": "Crear rol",
+    "index": "Acceso al módulo roles",
+    "edit": "Editar rol",
+    "delete": "Eliminar rol"
+  },
+  "organization": {
+    "index": "Acceso al módulo organización"
+  },
   "validate": {
     "required": "El campo {attribute} es requerido.",
     "email": "El campo {attribute} debe ser una dirección de correo válida.",

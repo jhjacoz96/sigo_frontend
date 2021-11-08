@@ -20,6 +20,7 @@
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
+            v-if="canPermissionsGetter('client.edit')"
             color="primary"
             small
             icon
@@ -28,6 +29,7 @@
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
           <v-btn
+            v-if="canPermissionsGetter('client.delete')"
             color="primary"
             small
             icon
@@ -54,7 +56,7 @@
 </template>
 
 <script>
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   import { getClientsApi } from '@/api/services'
   export default {
     name: 'AdminClientList',
@@ -102,6 +104,7 @@
     },
     computed: {
       ...mapState(['loadingState']),
+      ...mapGetters('auth', ['canPermissionsGetter']),
       clientsComputed: {
         get () {
           return this.clients

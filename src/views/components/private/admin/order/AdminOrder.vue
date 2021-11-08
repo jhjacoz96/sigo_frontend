@@ -20,11 +20,13 @@
       </v-btn>
       <v-container class="text-center justify-center">
         <admin-order-tab
+          :tabs="permissionTabs"
           @click:filter="getOrders($event)"
         />
         <v-divider class="mt-4" />
         <admin-order-list
           ref="adminOrderList"
+          :first-tab="permissionTabs.length > 0 ? permissionTabs[0].status : ''"
         />
       </v-container>
     </base-material-card>
@@ -32,6 +34,7 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
   export default {
     name: 'AdminOrder',
     components: {
@@ -40,7 +43,30 @@
     },
     data () {
       return {
+        tabs: [
+          {
+            name: 'Por verificar',
+            status: 'verificar',
+            can: 'order.status_one',
+          },
+          {
+            name: 'En proceso',
+            status: 'proceso',
+            can: 'order.status_two',
+          },
+          {
+            name: 'Enviados',
+            status: 'enviado',
+            can: 'order.status_three',
+          },
+        ],
       }
+    },
+    computed: {
+      ...mapGetters('auth', ['canPermissionsGetter']),
+      permissionTabs () {
+        return this.tabs.filter(item => this.canPermissionsGetter(item.can))
+      },
     },
     methods: {
       getOrders (status) {

@@ -21,6 +21,7 @@
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
+            v-if="canPermissionsGetter('product.delete')"
             color="primary"
             small
             icon
@@ -29,6 +30,7 @@
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
           <v-btn
+            v-if="canPermissionsGetter('product.delete')"
             color="primary"
             small
             icon
@@ -114,7 +116,7 @@
     },
     computed: {
       ...mapState(['loadingState']),
-      ...mapGetters('auth', ['currencyGetter']),
+      ...mapGetters('auth', ['currencyGetter', 'canPermissionsGetter']),
       productsComputed: {
         get () {
           return this.products

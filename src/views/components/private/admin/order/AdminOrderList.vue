@@ -26,6 +26,7 @@
         </template>
         <template v-slot:item.accion="{ item }">
           <v-btn
+            v-if="canPermissionsGetter('order.show')"
             :disabled="loadingState"
             class="ml-1"
             color="primary"
@@ -36,7 +37,7 @@
             <v-icon>mdi-eye</v-icon>
           </v-btn>
           <v-btn
-            v-if="item.status === 'verificar' || item.status === 'proceso'"
+            v-if="(item.status === 'verificar' || item.status === 'proceso') && canPermissionsGetter('order.verify')"
             :disabled="loadingState"
             class="ml-1"
             color="primary"
@@ -47,7 +48,7 @@
             <v-icon>mdi-check</v-icon>
           </v-btn>
           <v-btn
-            v-if="item.status === 'verificar'"
+            v-if="item.status === 'verificar' && canPermissionsGetter('order.edit')"
             :disabled="loadingState"
             class="ml-1"
             color="primary"
@@ -58,7 +59,7 @@
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
           <v-btn
-            v-if="item.status === 'verificar'"
+            v-if="item.status === 'verificar' && canPermissionsGetter('order.delete')"
             :disabled="loadingState"
             color="primary"
             small
@@ -93,6 +94,12 @@
       AdminOrderDetail: () => import('./AdminOrderDetail'),
     },
     mixins: [pagination],
+    props: {
+      firstTab: {
+        type: String,
+        default: '',
+      },
+    },
     data () {
       return {
         orders: [],
@@ -140,13 +147,13 @@
     },
     computed: {
       ...mapState(['loadingState']),
-      ...mapGetters('auth', ['currencyGetter']),
+      ...mapGetters('auth', ['currencyGetter', 'canPermissionsGetter']),
     },
     watch: {
       options: {
         deep: true,
         handler () {
-          this.getOrders('verificar')
+          this.getOrders(this.firstTab)
         },
       },
     },

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <base-material-card
-      icon="mdi-account"
+      icon="mdi-store-cog-outline"
       class="mx-auto"
       color="secondary"
       max-width="900"

@@ -13,22 +13,14 @@
 <script>
   export default {
     name: 'AdminOrderTab',
+    props: {
+      tabs: {
+        type: Array,
+        default: () => ([]),
+      },
+    },
     data () {
       return {
-        tabs: [
-          {
-            name: 'Por verificar',
-            status: 'verificar',
-          },
-          {
-            name: 'En proceso',
-            status: 'proceso',
-          },
-          {
-            name: 'Enviados',
-            status: 'enviado',
-          },
-        ],
       }
     },
     methods: {

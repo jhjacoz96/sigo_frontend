@@ -5,7 +5,6 @@
     :dark="barColor !== 'rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)'"
     :expand-on-hover="expandOnHover"
     :right="$vuetify.rtl"
-    :src="barImage"
     mobile-break-point="960"
     app
     width="260"
@@ -74,6 +73,7 @@
   // Utilities
   import {
     mapState,
+    mapGetters,
   } from 'vuex'
 
   export default {
@@ -91,19 +91,23 @@
           {
             icon: 'mdi-home',
             title: 'Inicio',
+            can: 'home',
             to: '/admin',
           },
           {
             group: '/admin',
             icon: 'mdi-widgets',
             title: 'Inventario',
+            can: 'inventary',
             children: [
               {
                 title: 'Categorias',
+                can: 'category.index',
                 to: 'categoria',
               },
               {
                 title: 'Productos',
+                can: 'product.index',
                 to: 'producto',
               },
             ],
@@ -112,13 +116,16 @@
             group: '/admin',
             icon: 'mdi-widgets',
             title: 'Compras',
+            can: 'purchase',
             children: [
               {
                 title: 'Gastos',
+                can: 'expense.index',
                 to: 'gasto',
               },
               {
                 title: 'Proveedores',
+                can: 'provider.index',
                 to: 'proveedor',
               },
             ],
@@ -126,43 +133,53 @@
           {
             icon: 'mdi-shopping',
             title: 'Pedidos',
+            can: 'order.index',
             to: '/admin/pedido',
           },
           {
             group: '/admin',
             icon: 'mdi-account',
             title: 'Usuarios',
+            can: 'user',
             children: [
               {
                 title: 'Clientes',
+                can: 'client.index',
                 to: 'cliente',
               },
               {
                 title: 'Empleados',
+                can: 'employee.index',
                 to: 'empleado',
               },
-              // {
-              //   title: 'Roles y permisos',
-              //   to: 'rol',
-              // },
+              {
+                title: 'Roles y permisos',
+                can: 'role.index',
+                to: 'rol',
+              },
             ],
           },
           {
-            icon: 'mdi-cog',
+            icon: 'mdi-store-cog-outline',
             title: 'Configuración',
+            can: 'organization.index',
             to: '/admin/configuracion',
           },
         ],
-        profile: {
-          icon: 'mdi-account',
-          title: 'Jhon Contreras',
-          to: '/admin/perfil',
-        },
       }
     },
 
     computed: {
       ...mapState(['barColor', 'barImage']),
+      ...mapGetters('auth', ['permissionsDrawerGetter']),
+      ...mapState('auth', ['userState']),
+      profile () {
+        return {
+          icon: 'mdi-account',
+          title: this.userState.profile.name,
+          to: '/admin/perfil',
+        }
+      },
       drawer: {
         get () {
           return this.$store.state.drawer
@@ -172,7 +189,7 @@
         },
       },
       computedItems () {
-        return this.items.map(this.mapItem)
+        return this.items.filter(this.filterItem).map(this.mapItem)
       },
     },
 
@@ -183,11 +200,14 @@
     },
 
     methods: {
+      filterItem (item) {
+        var access = this.permissionsDrawerGetter.includes(item.can)
+        return access
+      },
       mapItem (item) {
         return {
           ...item,
-          children: item.children ? item.children.map(this.mapItem) : undefined,
-          title: item.title,
+          children: item.children ? item.children.filter(this.filterItem).map(this.mapItem) : undefined,
         }
       },
     },

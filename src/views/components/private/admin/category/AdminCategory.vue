@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <base-material-card
-      icon="mdi-widgets"
+      icon="mdi-graph"
       color="secondary"
     >
       <template v-slot:after-heading>

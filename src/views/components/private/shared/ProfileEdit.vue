@@ -157,7 +157,7 @@
     watch: {
       dialog (value) {
         value || this.close()
-        if (value) { this.profile = this.userState.profile }
+        if (value) { Object.assign(this.profile, this.userState.profile) }
       },
     },
     methods: {

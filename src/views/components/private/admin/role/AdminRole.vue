@@ -6,7 +6,7 @@
     >
       <template v-slot:after-heading>
         <div class="font-weight-light card-title mt-2">
-          Roleos y permisos
+          Roles y permisos
         </div>
       </template>
       <v-btn
@@ -18,8 +18,13 @@
       >
         <span v-if="$vuetify.breakpoint.smAndUp">Agregar</span> <v-icon>mdi-plus</v-icon>
       </v-btn>
-      <admin-role-list />
-      <admin-role-add :dialog.sync="dialog" />
+      <admin-role-list
+        :roles.sync="roles"
+      />
+      <admin-role-add
+        :dialog.sync="dialog"
+        :roles.sync="roles"
+      />
     </base-material-card>
   </v-container>
 </template>
@@ -34,6 +39,7 @@
     data () {
       return {
         dialog: false,
+        roles: [],
       }
     },
   }

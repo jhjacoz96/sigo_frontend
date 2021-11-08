@@ -14,8 +14,40 @@ export default {
   state: initialState,
   getters: {
     userGetter: (state) => state.userState,
+    typeAuthGetter: (state) => state.userState ? state.userState.modelAssociate : null,
     organizationGetter: (state) => state.organizationState,
     currencyGetter: (state) => state.organizationState.currency,
+    permissionsGetter: (state) => {
+      if (state.userState.modelAssociate === 'Client') return []
+      return state.userState.profile.role.permissions
+    },
+    permissionsDrawerGetter: (state, getters) => {
+      if (state.userState.modelAssociate === 'Client') return []
+      var items = getters.permissionsGetter.filter(item => item.level === '1').map(item => item.name)
+      items.push('home')
+      if (
+        items.includes('category.index') &&
+        items.includes('product.index')
+      ) items.push('inventary')
+      if (
+        items.includes('expense.index') &&
+        items.includes('provider.index')
+      ) items.push('purchase')
+      if (
+        items.includes('client.index') &&
+        items.includes('employee.index') &&
+        items.includes('role.index')
+      ) items.push('user')
+      return items
+    },
+    permissionsNameGetter: (state, getters) => {
+      if (state.userState.modelAssociate === 'Client') return []
+      var items = getters.permissionsGetter.map(item => item.name)
+      return items
+    },
+    canPermissionsGetter: (state, getters) => (value) => {
+      return getters.permissionsNameGetter.includes(value)
+    },
     loggedInGetter: (state) => state.loggedInState,
   },
   mutations: {

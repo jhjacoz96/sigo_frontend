@@ -31,7 +31,7 @@ const router = new Router({
     },
     {
       path: '/tienda',
-      meta: { requiresAuth: true },
+      meta: { requires_auth: true, type_auth: 'CLient' },
       component: () => import('@/views/components/private/store/core/Index'),
       children: [
         {
@@ -83,7 +83,7 @@ const router = new Router({
     },
     {
       path: '/admin',
-      meta: { requiresAuth: true },
+      meta: { requires_auth: true, type_auth: 'Employee' },
       component: () => import('@/views/components/private/admin/core/Index'),
       children: [
         {
@@ -322,11 +322,13 @@ const router = new Router({
 })
 
 router.beforeEach(async (to, from, next) => {
-  const routerProtected = await to.matched.some(record => record.meta.requiresAuth)
+  const routerProtected = await to.matched.some(record => record.meta.requires_auth)
   if (routerProtected) {
     var authenticated = Store.getters['auth/loggedInGetter']
     if (authenticated) {
-      next()
+      var type = Store.getters['auth/typeAuthGetter']
+      const valid = await to.matched.some(record => record.meta.type_auth === type)
+      if (valid) { next() } else { next(false) }
     } else {
       next({
         name: 'Login',

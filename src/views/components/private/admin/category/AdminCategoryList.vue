@@ -44,6 +44,7 @@
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
+            v-if="canPermissionsGetter('category.edit')"
             color="primary"
             small
             icon
@@ -52,6 +53,7 @@
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
           <v-btn
+            v-if="canPermissionsGetter('category.delete')"
             color="primary"
             small
             icon
@@ -77,7 +79,7 @@
   </v-container>
 </template>
 <script>
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   import { getCategoriesApi } from '@/api/services'
   export default {
     name: 'AdminCategoryList',
@@ -110,6 +112,7 @@
     },
     computed: {
       ...mapState(['loadingState']),
+      ...mapGetters('auth', ['canPermissionsGetter']),
       categoriesComputed: {
         get () {
           return this.categories
@@ -127,7 +130,7 @@
       async getCategories () {
         this.SET_LOADING(true)
         const serviceResponse = await getCategoriesApi()
-        if (serviceResponse) {
+        if (serviceResponse.ok) {
           this.categoriesComputed = serviceResponse.data
         } else {
           this.SET_ALERT({

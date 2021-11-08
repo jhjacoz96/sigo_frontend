@@ -13,4 +13,13 @@ module.exports = {
       enableInSFC: false,
     },
   },
+  pwa: {
+    name: 'Sigo',
+    themeColor: '#1C3659',
+    msTileColor: '#000',
+    workboxPluginMode: 'GenerateSW',
+    workboxOptions: {
+      skipWaiting: true,
+    },
+  },
 }
