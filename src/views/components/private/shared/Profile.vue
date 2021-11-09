@@ -17,6 +17,25 @@
       <v-card-text>
         <v-container>
           <v-row
+            v-if="this.typeAuthGetter === 'Employee'"
+            justify="center"
+            align="center"
+          >
+            <v-col
+              cols="12"
+              sm="6"
+            >
+              <v-row>
+                <v-col class="grey--text text--lighten-1">
+                  <span>Rol:</span>
+                </v-col>
+                <v-col class="text-start">
+                  <span>{{ profile.role ? profile.role.name : ''  }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+          <v-row
             justify="center"
             align="center"
           >
@@ -133,7 +152,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
   export default {
     name: 'SharedProfile',
     components: {
@@ -158,6 +177,7 @@
     },
     computed: {
       ...mapState('auth', ['userState']),
+      ...mapGetters('auth', ['typeAuthGetter']),
     },
     created () {
       Object.assign(this.profile, this.userState.profile)
