@@ -4,6 +4,7 @@
       :headers="headers"
       :items="ordersComputed"
       :loading="loadingState"
+      :mobile-breakpoint="0"
       :items-per-page="5"
       disable-sort
     >

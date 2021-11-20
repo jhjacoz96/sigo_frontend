@@ -5,11 +5,14 @@
     :class="!$vuetify.breakpoint.smAndUp ? 'd-flex justify-space-between ': 'text-center'"
   >
     <v-img
+      v-if="$vuetify.breakpoint.mdAndUp"
       :src="src"
-      :max-width="!$vuetify.breakpoint.mdAndUp ? 100 : 200"
-      :max-height="!$vuetify.breakpoint.mdAndUp ? 250 : 100"
+      :max-width="!$vuetify.breakpoint.mdAndUp ? 100 : 250"
+      :max-height="!$vuetify.breakpoint.mdAndUp ? 150 : 150"
     />
-    <v-card-text class="text-left">
+    <v-card-text
+      :class="!$vuetify.breakpoint.mdAndUp ? 'text-left' : 'text-center'"
+    >
       <slot name="descriptions" />
     </v-card-text>
     <v-card-actions v-if="$slots.actions">

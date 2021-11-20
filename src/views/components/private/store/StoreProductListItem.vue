@@ -1,6 +1,6 @@
 <template>
   <div>
-    <base-item-product :src="productComputed.image">
+    <base-item-product :src="image">
       <template v-slot:descriptions>
         <div class="title-1">
           {{ productComputed.name }}
@@ -57,6 +57,7 @@
     data () {
       return {
         dialog: false,
+        image_default: require('@/assets/default.jpg'),
       }
     },
     computed: {
@@ -69,6 +70,9 @@
         set (value) {
           this.$emit('update:product', value)
         },
+      },
+      image () {
+        return this.productComputed.image ? this.productComputed.image : this.image_default
       },
     },
     methods: {
