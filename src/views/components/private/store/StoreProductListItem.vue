@@ -5,7 +5,6 @@
         <div class="title-1">
           {{ productComputed.name }}
         </div>
-        <span>{{ image }}</span>
         <span class="subtitle-1 grey--text d-block">{{ productComputed.category.name }}</span>
         <span class="subtitle-1 grey--text d-block">Stock: {{ productComputed.stock }}</span>
         <span class="green--text h1">Precio: {{ productComputed.price_sale }} {{ currencyGetter }}</span>

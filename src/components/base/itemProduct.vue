@@ -4,7 +4,6 @@
     elevation="4"
     :class="!$vuetify.breakpoint.smAndUp ? 'd-flex justify-space-between ': 'text-center'"
   >
-    <pre>{{ src }}</pre>
     <v-img
       v-if="$vuetify.breakpoint.mdAndUp"
       :src="src"
