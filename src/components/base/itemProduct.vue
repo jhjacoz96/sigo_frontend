@@ -13,7 +13,6 @@
     <v-card-text
       :class="!$vuetify.breakpoint.mdAndUp ? 'text-left' : 'text-center'"
     >
-      <pre>{{ src }}</pre>
       <slot name="descriptions" />
     </v-card-text>
     <v-card-actions v-if="$slots.actions">
