@@ -41,7 +41,14 @@
             :search="search"
             :items-per-page="5"
             disable-sort
+            :mobile-breakpoint="0"
           >
+            <template v-slot:item.name="{ item }">
+              <base-image-preview
+                :src="item.image"
+                :name="item.name"
+              />
+            </template>
             <template v-slot:item.price_sale="{ item }">
               {{ item.price_Sale }} {{ currencyGetter }}
             </template>
@@ -86,12 +93,12 @@
         dialog: false,
         search: '',
         headers: [
-          { text: 'Código', align: 'center', value: 'code' },
           {
             text: 'Producto',
             align: 'center',
             value: 'name',
           },
+          { text: 'Código', align: 'center', value: 'code' },
           { text: 'Categoria', align: 'center', value: 'category.name' },
           { text: 'Precio  de venta', align: 'center', value: 'price_sale' },
           { text: 'Stock', align: 'center', value: 'stock' },

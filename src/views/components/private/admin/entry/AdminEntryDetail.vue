@@ -71,7 +71,15 @@
           :headers="headers"
           :items="expense.products"
           disable-sort
+          :items-per-page="5"
+          :mobile-breakpoint="0"
         >
+          <template v-slot:item.name="{ item }">
+            <base-image-preview
+              :src="item.image"
+              :name="item.name"
+            />
+          </template>
           <template v-slot:top>
             <div class="grey--text text--lighten-1">
               Productos del gasto

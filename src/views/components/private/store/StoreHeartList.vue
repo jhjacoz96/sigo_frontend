@@ -5,7 +5,14 @@
     :loading="loadingState"
     :items-per-page="5"
     disable-sort
+    :mobile-breakpoint="0"
   >
+    <template v-slot:item.name="{ item }">
+      <base-image-preview
+        :src="item.product.image"
+        :name="item.product.name"
+      />
+    </template>
     <template v-slot:item.accion="{ item }">
       <v-btn
         color="success"
@@ -34,7 +41,7 @@
       return {
         products: [],
         headers: [
-          { text: 'Producto', value: 'product.name' },
+          { text: 'Producto', value: 'name' },
           { text: 'Stock', value: 'product.stock' },
           { text: 'Precio', value: 'price_sale' },
           { text: 'Acción', sortable: false, value: 'accion' },

@@ -55,11 +55,11 @@
                 :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 @click:append="showPassword = !showPassword"
               />
-              <div class="mb-6">
+              <!-- <div class="mb-6">
                 <router-link to="/">
                   ¿Has olvidado tu contraseña?
                 </router-link>
-              </div>
+              </div> -->
               <v-btn
                 large
                 :disabled="loadingState || !valid"

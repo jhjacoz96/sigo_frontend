@@ -41,6 +41,7 @@
         :loading="loadingState"
         :search="search"
         :items-per-page="5"
+        :mobile-breakpoint="0"
       >
         <template v-slot:item.accion="{ item }">
           <v-btn

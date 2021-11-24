@@ -17,6 +17,8 @@
         :search="search"
         :loading="loadingState"
         :items-per-page="5"
+        disable-sort
+        :mobile-breakpoint="0"
       >
         <template v-slot:item.accion="{ item }">
           <v-btn

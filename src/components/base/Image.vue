@@ -15,8 +15,8 @@
       @click="$refs.file.click()"
     >
       <v-img
-        v-if="imageChange"
-        :src="imageChange"
+        v-if="url"
+        :src="url"
         height="100%"
         width="100%"
       />
@@ -40,12 +40,24 @@
     name: 'BaseImage',
     props: {
       image: {
-        type: String,
-        default: null,
+        type: [String, Object, File],
+      },
+      resetImage: {
+        type: Boolean,
+        default: false,
       },
     },
+    data () {
+      return {
+        imageChange: require('@/assets/default.jpg'),
+      }
+    },
     computed: {
-      imageChange: {
+      url () {
+        if (typeof this.image === 'string') return this.image
+        return this.imageChange
+      },
+      imageComputed: {
         get () {
           return this.image
         },
@@ -54,11 +66,18 @@
         },
       },
     },
+    watch: {
+      resetImage (val) {
+        if (!val) { this.imageChange = require('@/assets/default.jpg') }
+      },
+    },
     methods: {
       onChange (val) {
-        const value = val.target.files[0]
-        if (value === null) return (this.imageChange = null)
-        this.imageChange = URL.createObjectURL(value)
+        if (val) {
+          const value = val.target.files[0]
+          this.imageComputed = value
+          this.imageChange = URL.createObjectURL(value)
+        }
       },
     },
   }

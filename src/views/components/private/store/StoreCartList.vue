@@ -6,7 +6,14 @@
       :loading="loadingState"
       :items-per-page="5"
       disable-sort
+      :mobile-breakpoint="0"
     >
+      <template v-slot:item.name="{ item }">
+        <base-image-preview
+          :src="item.product.image"
+          :name="item.product.name"
+        />
+      </template>
       <template v-slot:item.sub_total="{ item }">
         <span>{{ item.product.price_sale * item.quantity | price }} {{ currencyGetter }}</span>
       </template>
@@ -68,7 +75,7 @@
     data () {
       return {
         headers: [
-          { text: 'Producto', value: 'product.name' },
+          { text: 'Producto', value: 'name' },
           { text: 'Precio', value: 'price_sale' },
           { text: 'Cantidad', value: 'quantity' },
           { text: 'Sub total', value: 'sub_total' },

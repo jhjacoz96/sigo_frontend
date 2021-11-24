@@ -18,6 +18,7 @@
         :items="productsComputed"
         :items-per-page="5"
         disable-sort
+        :mobile-breakpoint="0"
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
@@ -42,6 +43,12 @@
         </template>
         <template v-slot:item.price_purchase="{ item }">
           {{ item.price_purchase }} {{ currencyGetter }}
+        </template>
+        <template v-slot:item.name="{ item }">
+          <base-image-preview
+            :src="item.image"
+            :name="item.name"
+          />
         </template>
         <template v-slot:item.price_sale="{ item }">
           {{ item.price_sale }} {{ currencyGetter }}

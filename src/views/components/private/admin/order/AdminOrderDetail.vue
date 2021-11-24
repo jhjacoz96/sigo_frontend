@@ -91,8 +91,16 @@
         <v-data-table
           :headers="headers"
           :items="order.products"
+          :items-per-page="5"
           disable-sort
+          :mobile-breakpoint="0"
         >
+          <template v-slot:item.name="{ item }">
+            <base-image-preview
+              :src="item.image"
+              :name="item.name"
+            />
+          </template>
           <template v-slot:top>
             <div class="grey--text text--lighten-1">
               Productos de la orden

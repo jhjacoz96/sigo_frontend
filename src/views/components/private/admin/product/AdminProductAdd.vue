@@ -32,7 +32,10 @@
               cols="auto"
               class="text-center"
             >
-              <base-image :image.sync="image" />
+              <base-image
+                :image.sync="productData.image"
+                :reset-image="dialogComputed"
+              />
             </v-col>
             <v-col
               cols="12"
@@ -76,6 +79,7 @@
                 :rules="validation_rules_price"
                 label="Precio de compra"
                 dense
+                :suffix="currencyGetter"
                 type="number"
                 outlined
               />
@@ -89,6 +93,7 @@
                 :rules="validation_rules_price"
                 label="Precio de venta"
                 dense
+                :suffix="currencyGetter"
                 type="number"
                 outlined
               />
@@ -111,7 +116,6 @@
               cols="12"
               md="6"
             >
-              {{ productData.status }}
               <v-select
                 v-model="productData.status"
                 :rules="validation_rules_status"
@@ -155,7 +159,7 @@
 <script>
   import { validationRules } from '@/mixins/validationRules'
   import { saveProductApi, updateProductApi, getCategoriesApi } from '@/api/services'
-  import { mapMutations, mapState } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   export default {
     name: 'AdminProductAdd',
     mixins: [validationRules],
@@ -190,6 +194,19 @@
           id: null,
           name: '',
           code: '',
+          image: require('@/assets/default.jpg'),
+          category_id: null,
+          stock: 0,
+          status: '',
+          price_sale: 0,
+          price_purchase: 0,
+          comment: '',
+        },
+        productDataDefault: {
+          id: null,
+          name: '',
+          code: '',
+          image: require('@/assets/default.jpg'),
           category_id: null,
           stock: 0,
           status: '',
@@ -200,6 +217,7 @@
       }
     },
     computed: {
+      ...mapGetters('auth', ['currencyGetter']),
       ...mapState(['loadingState']),
       password () {
         return this.productData.password
@@ -259,10 +277,8 @@
       close () {
         this.$nextTick(() => {
           this.dialogComputed = false
-          this.image = null
           this.$refs.form.reset()
           this.indexEditComputed = -1
-          this.productComputed = {}
           this.SET_LOADING(false)
         })
       },
@@ -280,8 +296,22 @@
       async saveItem () {
         if (this.validate) {
           this.SET_LOADING(true)
-          const serviceResponse = this.indexEditComputed === -1 ? await saveProductApi(this.productData)
-            : await updateProductApi(this.productData, this.productData.id)
+          const formData = new FormData()
+          formData.append('id', this.productData.id)
+          formData.append('code', this.productData.code)
+          formData.append('name', this.productData.name)
+          formData.append('image', typeof this.productData.image === 'object' ? this.productData.image : null)
+          formData.append('price_sale', this.productData.price_sale)
+          formData.append('price_purchase', this.productData.price_purchase)
+          formData.append('stock', this.productData.stock)
+          formData.append('comment', this.productData.comment)
+          formData.append('category_id', this.productData.category_id)
+          if (this.indexEditComputed !== -1) {
+            formData.append('_method', 'PUT')
+            formData.append('status', this.productData.status)
+          }
+          const serviceResponse = this.indexEditComputed === -1 ? await saveProductApi(formData)
+            : await updateProductApi(formData, this.productData.id)
           if (serviceResponse.ok) {
             this.indexEditComputed === -1 ? this.productsComputed.push(serviceResponse.data) : Object.assign(this.productsComputed[this.indexEditComputed], serviceResponse.data)
             this.SET_ALERT({

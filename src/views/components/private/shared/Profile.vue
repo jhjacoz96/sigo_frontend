@@ -30,7 +30,7 @@
                   <span>Rol:</span>
                 </v-col>
                 <v-col class="text-start">
-                  <span>{{ profile.role ? profile.role.name : ''  }}</span>
+                  <span>{{ profile.role ? profile.role.name : '' }}</span>
                 </v-col>
               </v-row>
             </v-col>
