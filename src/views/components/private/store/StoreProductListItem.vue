@@ -1,15 +1,20 @@
 <template>
-  <div>
-    <base-item-product :src="image">
+  <div
+    @click="addCart"
+  >
+    <base-item-product
+      :src="image"
+    >
       <template v-slot:descriptions>
-        <div class="title-1">
+        <div class="display-1">
           {{ productComputed.name }}
         </div>
         <span class="subtitle-1 grey--text d-block">{{ productComputed.category.name }}</span>
-        <span class="subtitle-1 grey--text d-block">Stock: {{ productComputed.stock }}</span>
-        <span class="green--text h1">Precio: {{ productComputed.price_sale }} {{ currencyGetter }}</span>
+        <div class="display-2 mt-1">
+          {{ productComputed.price_sale }} {{ currencyGetter }}
+        </div>
       </template>
-      <template v-slot:actions>
+      <!-- <template v-slot:actions>
         <v-btn
           :color="productComputed.favorites.includes(userState.profile.id) ? 'red' : ''"
           icon
@@ -24,10 +29,10 @@
         >
           <v-icon>mdi-cart-plus</v-icon>
         </v-btn>
-      </template>
+      </template> -->
     </base-item-product>
-    <store-cart-add
-      :product="productComputed"
+    <store-product-detail
+      :product.sync="productComputed"
       :dialog.sync="dialog"
     />
   </div>
@@ -35,13 +40,10 @@
 
 <script>
   import { mapMutations, mapState, mapGetters } from 'vuex'
-  import {
-    saveFavoriteApi,
-  } from '@/api/services'
   export default {
     name: 'StoreProductListItem',
     components: {
-      StoreCartAdd: () => import('./StoreCartAdd'),
+      StoreProductDetail: () => import('./StoreProductDetail'),
     },
     filters: {
       price (value) {
@@ -79,29 +81,6 @@
       ...mapMutations(['SET_ALERT']),
       addCart () {
         this.dialog = true
-      },
-      async saveFavorite (id) {
-        var data = {
-          product_id: id,
-        }
-        const serviceResponse = await saveFavoriteApi(data)
-        if (serviceResponse.ok) {
-          var exist = this.productComputed.favorites.includes(this.userState.profile.id)
-          if (!exist) this.productComputed.favorites.push(this.userState.profile.id)
-          else {
-            var index = this.productComputed.favorites.indexOf(this.userState.profile.id)
-            this.productComputed.favorites.splice(index, 1)
-          }
-          this.SET_ALERT({
-            text: serviceResponse.message,
-            color: 'success',
-          })
-        } else {
-          this.SET_ALERT({
-            text: serviceResponse.message.text,
-            color: 'warning',
-          })
-        }
       },
     },
   }

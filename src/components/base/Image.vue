@@ -41,6 +41,7 @@
     props: {
       image: {
         type: [String, Object, File],
+        default: null,
       },
       resetImage: {
         type: Boolean,

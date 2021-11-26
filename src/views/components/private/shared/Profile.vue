@@ -17,7 +17,7 @@
       <v-card-text>
         <v-container>
           <v-row
-            v-if="this.typeAuthGetter === 'Employee'"
+            v-if="typeAuthGetter === 'Employee'"
             justify="center"
             align="center"
           >
