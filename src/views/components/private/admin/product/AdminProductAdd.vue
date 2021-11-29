@@ -284,9 +284,11 @@
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       close () {
+        this.productData.price_sale = 0
+        this.productData.price_purchase = 0
         this.$nextTick(() => {
-          this.dialogComputed = false
           this.$refs.form.reset()
+          this.dialogComputed = false
           this.indexEditComputed = -1
           this.SET_LOADING(false)
         })
