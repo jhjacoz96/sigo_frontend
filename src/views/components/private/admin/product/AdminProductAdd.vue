@@ -75,12 +75,12 @@
               md="6"
             >
               <v-text-field
-                v-model="productData.price_purchase"
+                v-model.lazy="productData.price_purchase"
+                v-money="money"
                 :rules="validation_rules_price"
                 label="Precio de compra"
                 dense
                 :suffix="currencyGetter"
-                type="number"
                 outlined
               />
             </v-col>
@@ -89,12 +89,12 @@
               md="6"
             >
               <v-text-field
-                v-model="productData.price_sale"
+                v-model.lazy="productData.price_sale"
+                v-money="money"
                 :rules="validation_rules_price"
                 label="Precio de venta"
                 dense
                 :suffix="currencyGetter"
-                type="number"
                 outlined
               />
             </v-col>
@@ -103,7 +103,7 @@
               md="6"
             >
               <v-text-field
-                v-model="productData.stock"
+                v-model.number="productData.stock"
                 :rules="validation_rules_stock"
                 label="Stock"
                 dense
@@ -120,7 +120,7 @@
                 v-model="productData.status"
                 :rules="validation_rules_status"
                 :items="status"
-                item-value="value"
+                item-value=""
                 item-text="name"
                 label="Status"
                 dense
@@ -160,8 +160,10 @@
   import { validationRules } from '@/mixins/validationRules'
   import { saveProductApi, updateProductApi, getCategoriesApi } from '@/api/services'
   import { mapMutations, mapState, mapGetters } from 'vuex'
+  import { VMoney } from 'v-money'
   export default {
     name: 'AdminProductAdd',
+    directives: { money: VMoney },
     mixins: [validationRules],
     props: {
       dialog: {
@@ -194,7 +196,7 @@
           id: null,
           name: '',
           code: '',
-          image: require('@/assets/default.jpg'),
+          image: null,
           category_id: null,
           stock: 0,
           status: '',
@@ -206,13 +208,20 @@
           id: null,
           name: '',
           code: '',
-          image: require('@/assets/default.jpg'),
+          image: null,
           category_id: null,
           stock: 0,
           status: '',
           price_sale: 0,
           price_purchase: 0,
           comment: '',
+        },
+        money: {
+          decimal: '.',
+          prefix: '',
+          suffix: '',
+          precision: 2,
+          masked: true,
         },
       }
     },
@@ -300,9 +309,9 @@
           formData.append('id', this.productData.id)
           formData.append('code', this.productData.code)
           formData.append('name', this.productData.name)
-          formData.append('image', typeof this.productData.image === 'object' ? this.productData.image : null)
-          formData.append('price_sale', this.productData.price_sale)
-          formData.append('price_purchase', this.productData.price_purchase)
+          formData.append('image', this.productData.image && typeof this.productData.image === 'object' ? this.productData.image : null)
+          formData.append('price_sale', this.formatPrice(this.productData.price_sale))
+          formData.append('price_purchase', this.formatPrice(this.productData.price_purchase))
           formData.append('stock', this.productData.stock)
           formData.append('comment', this.productData.comment)
           formData.append('category_id', this.productData.category_id)
@@ -332,6 +341,11 @@
             color: 'warning',
           })
         }
+      },
+      formatPrice (value) {
+        var removeComma = value.replace(/,/g, '')
+        var formatNumber = parseFloat(removeComma).toFixed(2)
+        return formatNumber
       },
     },
   }

@@ -23,11 +23,13 @@ import vuetify from './plugins/vuetify'
 import i18n from './i18n'
 import filters from './helpers/filters'
 import moment from 'moment'
+import money from 'v-money'
 import './registerServiceWorker'
 
 Vue.config.productionTip = false
 
 Vue.use(filters)
+Vue.use(money, { precision: 2 })
 Vue.prototype.moment = moment
 // const moment = require('moment')
 // require('moment/locale/es')

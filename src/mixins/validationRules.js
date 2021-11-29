@@ -82,6 +82,10 @@ export const validationRules = {
                 v => !!v || this.$t('validate.required', {
                     'attribute': 'precio',
                 }),
+                v => v !== '0.00' || this.$t('validate.quantity.min', {
+                    'attribute': 'precio',
+                    'min': '0.00',
+                }),
             ],
             validation_rules_comment: [
                 v => (v || '').length <= 250 || this.$t('validate.max.string', {
