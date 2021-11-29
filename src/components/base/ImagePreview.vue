@@ -5,6 +5,7 @@
     <v-img
       :src="src || imageDefault"
       max-width="70"
+      max-height="70"
     />
     <div class="text-start ml-2">
       {{ name }}
