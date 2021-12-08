@@ -16,9 +16,13 @@
         :items="rolesComputed"
         :loading="loadingState"
         :search="search"
+        :options.sync="options"
+        :server-items-length="totalItems"
+        :page-count="numberOfPages"
+        :footer-props="footerProps"
+        :mobile-breakpoint="0"
         :items-per-page="5"
         disable-sort
-        :mobile-breakpoint="0"
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
@@ -57,6 +61,7 @@
   </v-container>
 </template>
 <script>
+  import { pagination } from '@/mixins/pagination'
   import { mapMutations, mapState, mapGetters } from 'vuex'
   import { getRolesApi } from '@/api/services'
   export default {
@@ -65,6 +70,7 @@
       AdminRoleDelete: () => import('./AdminRoleDelete'),
       AdminRoleAdd: () => import('./AdminRoleAdd'),
     },
+    mixins: [pagination],
     props: {
       roles: {
         type: Array,
@@ -100,16 +106,27 @@
         },
       },
     },
-    created () {
-      this.getroles()
+    watch: {
+      options: {
+        deep: true,
+        handler () {
+          this.rolesComputed = []
+          this.getroles()
+        },
+      },
     },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       async getroles () {
+        const params = {
+          sizePage: this.options.itemsPerPage,
+          page: this.options.page,
+        }
         this.SET_LOADING(true)
-        const serviceResponse = await getRolesApi()
+        const serviceResponse = await getRolesApi(params)
         if (serviceResponse.ok) {
-          this.rolesComputed = serviceResponse.data
+          this.rolesComputed = serviceResponse.data.data
+          this.paginate(serviceResponse.data.paginate)
         } else {
           this.SET_ALERT({
             text: serviceResponse.message.text,

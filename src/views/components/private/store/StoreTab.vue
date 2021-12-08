@@ -39,7 +39,7 @@
 <script>
   import { mapMutations } from 'vuex'
   import {
-    getCategoriesApi,
+    getAllCategoriesApi,
   } from '@/api/services'
   export default {
     name: 'StoreTab',
@@ -67,7 +67,7 @@
         this.$emit('click:active', slug)
       },
       async getCategories () {
-        const serviceResponse = await getCategoriesApi()
+        const serviceResponse = await getAllCategoriesApi()
         if (serviceResponse.ok) {
           this.categories = serviceResponse.data
           this.categories.unshift({

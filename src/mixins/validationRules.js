@@ -88,9 +88,12 @@ export const validationRules = {
                 }),
             ],
             validation_rules_comment: [
-                v => (v || '').length <= 250 || this.$t('validate.max.string', {
+                v => !!v || this.$t('validate.required', {
                     'attribute': 'comentario',
-                    'max': 250,
+                }),
+                v => (v || '').length <= 500 || this.$t('validate.max.string', {
+                    'attribute': 'comentario',
+                    'max': 500,
                 }),
             ],
             validation_rules_code: [
@@ -116,6 +119,15 @@ export const validationRules = {
             validation_rules_provider: [
                 v => !!v || this.$t('validate.required', {
                     'attribute': 'proveedor',
+                }),
+            ],
+            validation_rules_address: [
+                v => !!v || this.$t('validate.required', {
+                    'attribute': 'dirección',
+                }),
+                v => (v || '').length <= 500 || this.$t('validate.max.string', {
+                    'attribute': 'dirección',
+                    'max': 500,
                 }),
             ],
         }

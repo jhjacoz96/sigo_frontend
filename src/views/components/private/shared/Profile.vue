@@ -14,6 +14,7 @@
           Debe completar los datos de su perfil para poder continuar
         </div> -->
       </template>
+
       <v-card-text>
         <v-container>
           <v-row
@@ -125,6 +126,82 @@
               </v-row>
             </v-col>
           </v-row>
+          <v-row
+            v-if="typeAuthGetter === 'CLient'"
+            justify="center"
+            align="center"
+          >
+            <v-col
+              cols="12"
+              sm="6"
+            >
+              <v-row>
+                <v-col class="grey--text text--lighten-1">
+                  <span>Total de ventas (Mes actual):</span>
+                </v-col>
+                <v-col class="text-start">
+                  <span>{{ profile.current_quantity_sale }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="typeAuthGetter === 'CLient'"
+            justify="center"
+            align="center"
+          >
+            <v-col
+              cols="12"
+              sm="6"
+            >
+              <v-row>
+                <v-col class="grey--text text--lighten-1">
+                  <span>Monto de comision (Mes actual):</span>
+                </v-col>
+                <v-col class="text-start">
+                  <span>{{ profile.current_commission }} {{ currencyGetter }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="typeAuthGetter === 'CLient'"
+            justify="center"
+            align="center"
+          >
+            <v-col
+              cols="12"
+              sm="6"
+            >
+              <v-row>
+                <v-col class="grey--text text--lighten-1">
+                  <span>Total de ventas (Mes anterior):</span>
+                </v-col>
+                <v-col class="text-start">
+                  <span>{{ profile.last_quantity_sale }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="typeAuthGetter === 'CLient'"
+            justify="center"
+            align="center"
+          >
+            <v-col
+              cols="12"
+              sm="6"
+            >
+              <v-row>
+                <v-col class="grey--text text--lighten-1">
+                  <span>Monto de comision (Mes actual)</span>
+                </v-col>
+                <v-col class="text-start">
+                  <span>{{ profile.last_commission }} {{ currencyGetter }}</span>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions class="justify-end">
@@ -177,7 +254,7 @@
     },
     computed: {
       ...mapState('auth', ['userState']),
-      ...mapGetters('auth', ['typeAuthGetter']),
+      ...mapGetters('auth', ['typeAuthGetter', 'currencyGetter']),
     },
     created () {
       Object.assign(this.profile, this.userState.profile)

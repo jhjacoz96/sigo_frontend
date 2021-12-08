@@ -57,9 +57,6 @@
 
 <script>
   import { mapMutations, mapState, mapGetters } from 'vuex'
-  import {
-    getCartApi,
-  } from '@/api/services'
   export default {
     name: 'StoreCartList',
     components: {
@@ -99,24 +96,22 @@
         },
       },
     },
-    created () {
-      this.getCart()
-    },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
-      async getCart () {
-        this.SET_LOADING(true)
-        const serviceResponse = await getCartApi()
-        if (serviceResponse.ok) {
-          this.productsComputed = serviceResponse.data
-        } else {
-          this.SET_ALERT({
-            text: serviceResponse.message.text,
-            color: 'warning',
-          })
-        }
-        this.SET_LOADING(false)
-      },
+      // async getCart () {
+      //   this.SET_LOADING(true)
+      //   const serviceResponse = await getCartApi()
+      //   if (serviceResponse.ok) {
+      //     this.productsComputed = serviceResponse.data.data
+      //     this.paginate(serviceResponse.data.paginate)
+      //   } else {
+      //     this.SET_ALERT({
+      //       text: serviceResponse.message.text,
+      //       color: 'warning',
+      //     })
+      //   }
+      //   this.SET_LOADING(false)
+      // },
       deleteCart (item) {
         this.product = item
         this.dialogDelete = true

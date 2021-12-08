@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     v-model="dialog"
-    width="600"
+    width="800"
     persistent
   >
     <v-card
@@ -19,6 +19,10 @@
       <v-card-title>
         Detalles de pedido
       </v-card-title>
+      <v-card-text>
+        Datos del pedido
+        <v-divider />
+      </v-card-text>
       <v-card-text class="text-center">
         <v-row
           justify="space-between"
@@ -73,6 +77,77 @@
               Fecha:
             </div>
             <div>{{ moment(order.created_at).format('D-M-YYYY') }}</div>
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-card-text>
+        Datos del envío
+        <v-divider />
+      </v-card-text>
+      <v-card-text class="text-center">
+        <v-row
+          justify="space-between"
+          align="center"
+        >
+          <v-col
+            cols="6"
+            sm="4"
+            class="text-start"
+          >
+            <div class="grey--text text--lighten-1">
+              Nomber:
+            </div>
+            <div>{{ order.name_delivery }}</div>
+          </v-col>
+          <v-col
+            cols="6"
+            sm="4"
+            class="text-start"
+          >
+            <div class="grey--text text--lighten-1">
+              Tipo de pago:
+            </div>
+            <div>{{ order.type_payment }}</div>
+          </v-col>
+          <v-col
+            cols="6"
+            sm="4"
+            class="text-start"
+          >
+            <div class="grey--text text--lighten-1">
+              Estado:
+            </div>
+            <div>{{ order.phone_delivery }}</div>
+          </v-col>
+          <v-col
+            cols="6"
+            sm="4"
+            class="text-start"
+          >
+            <div class="grey--text text--lighten-1">
+              Costo:
+            </div>
+            <div>{{ order.cost_delivery }} {{ currencyGetter }}</div>
+          </v-col>
+          <v-col
+            cols="6"
+            sm="4"
+            class="text-start"
+          >
+            <div class="grey--text text--lighten-1">
+              Dirección:
+            </div>
+            <div>{{ order.address_delivery }}</div>
+          </v-col>
+          <v-col
+            cols="6"
+            sm="4"
+            class="text-start"
+          >
+            <div class="grey--text text--lighten-1">
+              Comentario adicional:
+            </div>
+            <div>{{ order.comment_delivery }}</div>
           </v-col>
         </v-row>
       </v-card-text>

@@ -132,7 +132,6 @@
           },
           { text: 'Acciones', sortable: false, filterable: false, value: 'accion' },
         ],
-        itemsPerPage: 5,
         order: {
           code: null,
           client: undefined,
@@ -144,6 +143,7 @@
         },
         dialogDelete: false,
         dialogShow: false,
+        itemsPerPage: 5,
       }
     },
     computed: {

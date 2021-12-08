@@ -17,10 +17,17 @@
       />
     </v-tab-item>
     <v-tab-item class="pb-12">
+      <admin-order-add-form-delivery
+        ref="adminOrderAddFormDelivery"
+        :order.sync="order"
+        :validate.sync="valid[1]"
+      />
+    </v-tab-item>
+    <v-tab-item class="pb-12">
       <admin-order-add-form-product
         ref="adminOrderAddFormProduct"
         :order.sync="order"
-        :validate.sync="valid[1]"
+        :validate.sync="valid[2]"
       />
     </v-tab-item>
   </base-material-wizard>
@@ -29,24 +36,31 @@
 <script>
   import { mapMutations, mapState } from 'vuex'
   import { saveOrderApi, showOrderAdminApi, updateOrderAdminApi, getLastIndexOrderAdminApi } from '@/api/services'
+  import { $formatPrice } from '@/helpers/function'
   export default {
     name: 'AdminOrderAddForm',
     components: {
       AdminOrderAddFormGeneral: () => import('./AdminOrderAddFormGeneral'),
+      AdminOrderAddFormDelivery: () => import('./AdminOrderAddFormDelivery'),
       AdminOrderAddFormProduct: () => import('./AdminOrderAddFormProduct'),
     },
     data: () => ({
-      valid: [true, false],
+      valid: [true, true, false],
       dialog: false,
       order: {
         type_payment: '',
+        name_delivery: '',
+        phone_delivery: '',
+        cost_delivery: 0,
+        address_delivery: '',
+        comment_delivery: '',
         code: 0,
         client_id: null,
         total: 0,
         products: [],
       },
       tab: 0,
-      tabs: ['Datos generales', 'Carrito'],
+      tabs: ['Datos generales', 'Datos de envío', 'Carrito'],
     }),
     computed: {
       ...mapState(['loadingState']),
@@ -62,6 +76,12 @@
           steps.includes(0)
         ) {
           steps.push(2)
+        }
+        if (
+          this.valid[2] &&
+          steps.includes(1)
+        ) {
+          steps.push(3)
         }
         return steps
       },
@@ -81,6 +101,7 @@
           this.validateForm(this.scope).then(async item => {
             if (!item) return
             if (this.tab === this.tabs.length - 1) {
+              this.order.cost_delivery = $formatPrice(this.order.cost_delivery)
               this.SET_LOADING(true)
               const serviceResponse = this.$route.params.id ? await updateOrderAdminApi(this.order.id, this.order) : await saveOrderApi(this.order)
               if (serviceResponse.ok) {
@@ -129,6 +150,9 @@
         switch (this.tab) {
           case 0:
             res = 'adminOrderAddFormGeneral'
+            break
+          case 1:
+            res = 'adminOrderAddFormDelivery'
             break
           default:
             res = 'adminOrderAddFormProduct'

@@ -5,6 +5,7 @@ export const pagination = {
             totalItems: 0,
             numberOfPages: 0,
             footerProps: { 'items-per-page-options': [5, 10, 25] },
+            // itemsPerPage: 5,
         }
     },
     methods: {

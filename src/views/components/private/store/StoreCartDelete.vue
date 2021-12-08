@@ -81,9 +81,7 @@
         this.SET_LOADING(true)
         const serviceResponse = await deleteCartApi(this.product.id)
         if (serviceResponse.ok) {
-          var index = this.products.indexOf(this.product)
-          this.products.splice(index, 1)
-          this.REMOVE_ITEM_CART(this.product.product.id)
+          this.REMOVE_ITEM_CART(this.product.id)
           this.close()
           this.SET_ALERT({
             text: serviceResponse.message,

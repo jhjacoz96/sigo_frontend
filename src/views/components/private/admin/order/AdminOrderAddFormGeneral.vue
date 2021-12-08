@@ -72,7 +72,7 @@
 
 <script>
   import { validationRules } from '@/mixins/validationRules'
-  import { getClientsApi } from '@/api/services'
+  import { getAllClientApi } from '@/api/services'
   import { mapMutations } from 'vuex'
   export default {
     name: 'AdminOrderAddFormClient',
@@ -176,7 +176,7 @@
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       async getClients () {
-        const serviceResponse = await getClientsApi()
+        const serviceResponse = await getAllClientApi()
         if (serviceResponse.ok) {
           this.clients = serviceResponse.data
         } else {

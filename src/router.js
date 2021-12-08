@@ -104,7 +104,7 @@ const router = new Router({
         {
           name: 'Administración',
           path: '',
-          component: () => import('@/views/components/private/admin/AdminInicio'),
+          component: () => import('@/views/components/private/admin/home/Home'),
         },
         {
           name: 'Pedidos',

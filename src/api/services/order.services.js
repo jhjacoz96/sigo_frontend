@@ -5,9 +5,12 @@ import {
 } from '../config/apiRoute'
 
 export const saveOrderApi = (data) => apiHttp('POST', `${orderPath}`, data)
-export const getOrdersApi = (data) => apiHttp('GET', `${orderPath}`)
+export const getOrdersApi = (params) => {
+    let options = { params }
+    return apiHttp('GET', `${orderPath}`, null, options)
+}
 export const getOrdersAdminApi = (params) => {
-    var options = { params }
+    let options = { params }
     return apiHttp('GET', `${orderAdminPath}`, null, options)
 }
 export const deleteOrderAdminApi = (id) => apiHttp('DELETE', `${orderAdminPath}/${id}`)

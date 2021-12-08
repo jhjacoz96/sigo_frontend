@@ -80,7 +80,7 @@
         }
         const serviceResponse = await searchProductsApi(options)
         if (serviceResponse.ok) {
-          this.products = serviceResponse.data.products
+          this.products = serviceResponse.data.data
           this.paginate = serviceResponse.data.paginate
         } else {
           this.SET_ALERT({

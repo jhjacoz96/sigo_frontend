@@ -39,9 +39,14 @@
             :headers="headers"
             :items="data"
             :search="search"
+            :loading="loadingState"
+            :options.sync="options"
+            :server-items-length="totalItems"
+            :page-count="numberOfPages"
+            :footer-props="footerProps"
+            :mobile-breakpoint="0"
             :items-per-page="5"
             disable-sort
-            :mobile-breakpoint="0"
           >
             <template v-slot:item.name="{ item }">
               <base-image-preview
@@ -78,10 +83,12 @@
 </template>
 
 <script>
+  import { pagination } from '@/mixins/pagination'
   import { getProductsApi } from '@/api/services'
   import { mapMutations, mapState, mapGetters } from 'vuex'
   export default {
     name: 'AdminOrderAddFormProductAdd',
+    mixins: [pagination],
     props: {
       products: {
         type: Array,
@@ -119,21 +126,34 @@
         },
       },
     },
-    created () {
-      this.getProducts()
+    watch: {
+      options: {
+        deep: true,
+        handler () {
+          this.data = []
+          this.getProducts()
+        },
+      },
     },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       async getProducts () {
-        const serviceResponse = await getProductsApi()
+        const params = {
+          sizePage: this.options.itemsPerPage,
+          page: this.options.page,
+        }
+        this.SET_LOADING(true)
+        const serviceResponse = await getProductsApi(params)
         if (serviceResponse.ok) {
-          this.data = serviceResponse.data
+          this.data = serviceResponse.data.data
+          this.paginate(serviceResponse.data.paginate)
         } else {
           this.SET_ALERT({
             text: serviceResponse.message.text,
             color: 'warning',
           })
         }
+        this.SET_LOADING(false)
       },
       addCart (item) {
         var formatItem = {

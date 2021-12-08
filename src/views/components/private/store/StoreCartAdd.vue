@@ -112,15 +112,11 @@
       },
       async addCart () {
         this.SET_LOADING(true)
-        this.data.product_id = this.indexEdit === -1 ? this.product.id : this.product.product.id
+        this.data.product_id = this.product.product.id
         this.data.client_id = this.userState.profile.id
         const serviceResponse = await addCartApi(this.data)
         if (serviceResponse.ok) {
-          if (this.indexEdit !== -1) {
-            this.products[this.indexEdit].quantity = this.data.quantity
-          } else {
-            this.SET_ITEM_CART(this.data.product_id)
-          }
+          this.SET_ITEM_CART(serviceResponse.data)
           this.close()
           this.SET_ALERT({
             text: serviceResponse.message,

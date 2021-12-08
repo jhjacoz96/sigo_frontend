@@ -40,8 +40,13 @@
         :items="categoriesComputed"
         :loading="loadingState"
         :search="search"
-        :items-per-page="5"
+        :options.sync="options"
+        :server-items-length="totalItems"
+        :page-count="numberOfPages"
+        :footer-props="footerProps"
         :mobile-breakpoint="0"
+        :items-per-page="5"
+        disable-sort
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
@@ -80,6 +85,7 @@
   </v-container>
 </template>
 <script>
+  import { pagination } from '@/mixins/pagination'
   import { mapMutations, mapState, mapGetters } from 'vuex'
   import { getCategoriesApi } from '@/api/services'
   export default {
@@ -88,6 +94,7 @@
       AdminCategoryDelete: () => import('./AdminCategoryDelete'),
       AdminCategoryAdd: () => import('./AdminCategoryAdd'),
     },
+    mixins: [pagination],
     props: {
       categories: {
         type: Array,
@@ -123,16 +130,27 @@
         },
       },
     },
-    created () {
-      this.getCategories()
+    watch: {
+      options: {
+        deep: true,
+        handler () {
+          this.categoriesComputed = []
+          this.getCategories()
+        },
+      },
     },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       async getCategories () {
         this.SET_LOADING(true)
-        const serviceResponse = await getCategoriesApi()
+        const params = {
+          sizePage: this.options.itemsPerPage,
+          page: this.options.page,
+        }
+        const serviceResponse = await getCategoriesApi(params)
         if (serviceResponse.ok) {
-          this.categoriesComputed = serviceResponse.data
+          this.categoriesComputed = serviceResponse.data.data
+          this.paginate(serviceResponse.data.paginate)
         } else {
           this.SET_ALERT({
             text: serviceResponse.message.text,

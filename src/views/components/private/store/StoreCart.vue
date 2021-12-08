@@ -20,7 +20,7 @@
           </template>
           <v-card-text>
             <store-cart-list
-              :products.sync="products"
+              :products.sync="cartState"
             />
             <!-- <v-card
                     v-for="(item, i) in data"
@@ -72,7 +72,7 @@
         class="ma-0"
       >
         <store-cart-summary
-          :products.sync="products"
+          :products.sync="cartState"
         />
       </v-col>
     </v-row>
@@ -80,6 +80,7 @@
 </template>
 
 <script>
+  import { mapActions, mapState } from 'vuex'
   export default {
     name: 'StoreCart',
     components: {
@@ -90,6 +91,15 @@
       return {
         products: [],
       }
+    },
+    computed: {
+      ...mapState('cart', ['cartState']),
+    },
+    created () {
+      this.getCartAction()
+    },
+    methods: {
+      ...mapActions('cart', ['getCartAction']),
     },
   }
 </script>

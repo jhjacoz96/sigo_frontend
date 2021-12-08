@@ -101,7 +101,6 @@
   import { validationRules } from '@/mixins/validationRules'
   import {
     saveFavoriteApi,
-
     addCartApi,
   } from '@/api/services'
 
@@ -167,7 +166,7 @@
           if (this.indexEdit !== -1) {
             this.products[this.indexEdit].quantity = this.data.quantity
           } else {
-            this.SET_ITEM_CART(this.data.product_id)
+            this.SET_ITEM_CART(serviceResponse.data)
           }
           this.close()
           this.SET_ALERT({

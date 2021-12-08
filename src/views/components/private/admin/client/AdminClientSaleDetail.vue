@@ -18,10 +18,10 @@
       </v-btn>
 
       <v-card-title>
-        Detalles de pedido
+        Detalles de Venta
       </v-card-title>
       <v-card-text>
-        Datos del pedido
+        Datos del cliente
         <v-divider />
       </v-card-text>
       <v-card-text class="text-center">
@@ -35,9 +35,9 @@
             class="text-start"
           >
             <div class="grey--text text--lighten-1">
-              Código:
+              Nombre:
             </div>
-            <div>{{ order.code }}</div>
+            <div>{{ clientSale.name }}</div>
           </v-col>
           <v-col
             cols="6"
@@ -45,44 +45,14 @@
             class="text-start"
           >
             <div class="grey--text text--lighten-1">
-              Tipo de pago:
+              Cédula:
             </div>
-            <div>{{ order.type_payment }}</div>
-          </v-col>
-          <v-col
-            cols="6"
-            sm="4"
-            class="text-start"
-          >
-            <div class="grey--text text--lighten-1">
-              Estado:
-            </div>
-            <div>{{ order.status }}</div>
-          </v-col>
-          <v-col
-            cols="6"
-            sm="4"
-            class="text-start"
-          >
-            <div class="grey--text text--lighten-1">
-              Total:
-            </div>
-            <div>{{ order.total }} {{ currencyGetter }}</div>
-          </v-col>
-          <v-col
-            cols="6"
-            sm="4"
-            class="text-start"
-          >
-            <div class="grey--text text--lighten-1">
-              Fecha:
-            </div>
-            <div>{{ moment(order.created_at).format('D-M-YYYY') }}</div>
+            <div>{{ clientSale.document }}</div>
           </v-col>
         </v-row>
       </v-card-text>
       <v-card-text>
-        Datos del envío
+        Detalles de ventas
         <v-divider />
       </v-card-text>
       <v-card-text class="text-center">
@@ -96,9 +66,9 @@
             class="text-start"
           >
             <div class="grey--text text--lighten-1">
-              Nomber:
+              Monto total de ventas (Mes actual):
             </div>
-            <div>{{ order.name_delivery }}</div>
+            <div>{{ clientSale.current_total_sale }} {{ currencyGetter }}</div>
           </v-col>
           <v-col
             cols="6"
@@ -106,9 +76,9 @@
             class="text-start"
           >
             <div class="grey--text text--lighten-1">
-              Tipo de pago:
+              Cantidad de ventas (Mes actual):
             </div>
-            <div>{{ order.type_payment }}</div>
+            <div>{{ clientSale.current_quantity_sale }}</div>
           </v-col>
           <v-col
             cols="6"
@@ -116,9 +86,24 @@
             class="text-start"
           >
             <div class="grey--text text--lighten-1">
-              Estado:
+              Comisión total de ventas (Mes actual):
             </div>
-            <div>{{ order.phone_delivery }}</div>
+            <div>{{ clientSale.current_commission_sale }} {{ currencyGetter }}</div>
+          </v-col>
+        </v-row>
+        <v-row
+          justify="space-between"
+          align="center"
+        >
+          <v-col
+            cols="6"
+            sm="4"
+            class="text-start"
+          >
+            <div class="grey--text text--lighten-1">
+              Monto total de ventas (Mes pasado):
+            </div>
+            <div>{{ clientSale.last_total_sale }} {{ currencyGetter }}</div>
           </v-col>
           <v-col
             cols="6"
@@ -126,9 +111,9 @@
             class="text-start"
           >
             <div class="grey--text text--lighten-1">
-              Costo:
+              Cantidad de ventas (Mes pasado):
             </div>
-            <div>{{ order.cost_delivery }} {{ currencyGetter }}</div>
+            <div>{{ clientSale.last_quantity_sale }}</div>
           </v-col>
           <v-col
             cols="6"
@@ -136,46 +121,32 @@
             class="text-start"
           >
             <div class="grey--text text--lighten-1">
-              Dirección:
+              Comisión total de ventas (Mes pasado):
             </div>
-            <div>{{ order.address_delivery }}</div>
-          </v-col>
-          <v-col
-            cols="6"
-            sm="4"
-            class="text-start"
-          >
-            <div class="grey--text text--lighten-1">
-              Comentario adicional:
-            </div>
-            <div>{{ order.comment_delivery }}</div>
+            <div>{{ clientSale.last_commission_sale }} {{ currencyGetter }}</div>
           </v-col>
         </v-row>
       </v-card-text>
       <v-card-text>
         <v-data-table
           :headers="headers"
-          :items="order.products"
+          :loading="loadingState"
+          :items="pays"
+          :options.sync="options"
+          :server-items-length="totalItems"
+          :page-count="numberOfPages"
+          :footer-props="footerProps"
+          :mobile-breakpoint="0"
           :items-per-page="5"
           disable-sort
-          :mobile-breakpoint="0"
         >
-          <template v-slot:item.name="{ item }">
-            <base-image-preview
-              :src="item.image"
-              :name="item.name"
-            />
-          </template>
           <template v-slot:top>
             <div class="grey--text text--lighten-1">
-              Productos de la orden
+              Pagos realizados
             </div>
           </template>
-          <template v-slot:item.price_sale="{ item }">
-            {{ item.price_sale }} {{ currencyGetter }}
-          </template>
-          <template v-slot:item.sub_total="{ item }">
-            {{ item.price_sale * item.quantity | price }} {{ currencyGetter }}
+          <template v-slot:item.amount="{ item }">
+            {{ item.amount }} {{ currencyGetter }}
           </template>
         </v-data-table>
       </v-card-text>
@@ -183,15 +154,18 @@
   </v-dialog>
 </template>
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
+  import { pagination } from '@/mixins/pagination'
+  import { getPaysApi } from '@/api/services'
   export default {
-    name: 'AdminOrderDetail',
+    name: 'AdminClientSaleDetail',
+    mixins: [pagination],
     props: {
       dialog: {
         type: Boolean,
         default: false,
       },
-      order: {
+      clientSale: {
         type: Object,
         default: () => ({}),
       },
@@ -199,56 +173,60 @@
     data () {
       return {
         headers: [
-          { text: 'Producto', value: 'name' },
-          { text: 'Precio de venta', value: 'price_sale' },
-          { text: 'Cantidad', value: 'quantity' },
-          { text: 'Sub total', value: 'sub_total' },
+          { text: 'Comición pagada', value: 'amount' },
+          { text: 'Cantidad de ventas', value: 'quantity' },
+          { text: 'Mes', value: 'month' },
+          { text: 'Año', value: 'year' },
         ],
+        pays: [],
       }
     },
     computed: {
       ...mapGetters('auth', ['currencyGetter']),
-      orderFormat () {
-        const keys = [
-          {
-            name: 'Código',
-            value: 'code',
-          },
-          {
-            name: 'Nombre',
-            value: 'name',
-          },
-          {
-            name: 'Precio',
-            value: 'price_sale',
-          },
-          {
-            name: 'Cantidad',
-            value: 'quantity',
-          },
-        ]
-        const orderValue = Object.entries(this.order).map(item => {
-          const [key, value] = item
-          return {
-            key,
-            value,
-          }
-        }).filter(item => {
-          if (keys.map(item1 => item1.value).includes(item.key)) return item
-        })
-        return orderValue
-      },
+      ...mapState(['loadingState']),
     },
     watch: {
       dialog (value) {
         value || this.close()
+        if (value) {
+          this.pays = []
+          this.getPays()
+        } else {
+          this.pays = []
+        }
+      },
+      options: {
+        deep: true,
+        handler () {
+          this.pays = []
+          this.getPays()
+        },
       },
     },
     methods: {
+      ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       close () {
         this.$nextTick(() => {
           this.$emit('update:dialog', false)
         })
+      },
+      async getPays () {
+        const params = {
+          sizePage: this.options.itemsPerPage,
+          page: this.options.page,
+        }
+        this.SET_LOADING(true)
+        const serviceResponse = await getPaysApi(params, this.clientSale.id)
+        if (serviceResponse.ok) {
+          this.pays = serviceResponse.data.data
+          this.paginate(serviceResponse.data.paginate)
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
+        this.SET_LOADING(false)
       },
     },
   }

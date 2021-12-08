@@ -40,7 +40,7 @@
 
 <script>
   import { mapMutations } from 'vuex'
-  import { getProvidersApi } from '@/api/services'
+  import { getAllProvidersApi } from '@/api/services'
   import { validationRules } from '@/mixins/validationRules'
   export default {
     name: 'AdminEntryAddFormGeneral',
@@ -95,7 +95,7 @@
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       async getProviders () {
-        const serviceResponse = await getProvidersApi()
+        const serviceResponse = await getAllProvidersApi()
         if (serviceResponse.ok) {
           this.providers = serviceResponse.data
         } else {

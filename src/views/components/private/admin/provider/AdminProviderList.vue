@@ -16,9 +16,13 @@
         :items="providersComputed"
         :loading="loadingState"
         :search="search"
+        :options.sync="options"
+        :server-items-length="totalItems"
+        :page-count="numberOfPages"
+        :footer-props="footerProps"
+        :mobile-breakpoint="0"
         :items-per-page="5"
         disable-sort
-        :mobile-breakpoint="0"
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
@@ -58,6 +62,7 @@
 </template>
 
 <script>
+  import { pagination } from '@/mixins/pagination'
   import { mapMutations, mapState, mapGetters } from 'vuex'
   import { getProvidersApi } from '@/api/services'
   export default {
@@ -66,6 +71,7 @@
       AdminProviderDelete: () => import('./AdminProviderDelete'),
       AdminProviderAdd: () => import('./AdminProviderAdd'),
     },
+    mixins: [pagination],
     props: {
       providers: {
         type: Array,
@@ -116,16 +122,27 @@
         },
       },
     },
-    created () {
-      this.getProviders()
+    watch: {
+      options: {
+        deep: true,
+        handler () {
+          this.providersComputed = []
+          this.getProviders()
+        },
+      },
     },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       async getProviders () {
+        const params = {
+          sizePage: this.options.itemsPerPage,
+          page: this.options.page,
+        }
         this.SET_LOADING(true)
-        const serviceResponse = await getProvidersApi()
+        const serviceResponse = await getProvidersApi(params)
         if (serviceResponse.ok) {
-          this.providersComputed = serviceResponse.data
+          this.providersComputed = serviceResponse.data.data
+          this.paginate(serviceResponse.data.paginate)
         } else {
           this.SET_ALERT({
             text: serviceResponse.message.text,

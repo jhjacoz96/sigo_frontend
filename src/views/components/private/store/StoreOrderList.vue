@@ -4,6 +4,10 @@
       :headers="headers"
       :items="ordersComputed"
       :loading="loadingState"
+      :options.sync="options"
+      :server-items-length="totalItems"
+      :page-count="numberOfPages"
+      :footer-props="footerProps"
       :mobile-breakpoint="0"
       :items-per-page="5"
       disable-sort
@@ -32,6 +36,7 @@
 </template>
 
 <script>
+  import { pagination } from '@/mixins/pagination'
   import { mapMutations, mapState, mapGetters } from 'vuex'
   import {
     getOrdersApi,
@@ -41,6 +46,7 @@
     components: {
       StoreOrderDetail: () => import('./StoreOrderDetail'),
     },
+    mixins: [pagination],
     props: {
       orders: {
         type: Array,
@@ -73,16 +79,27 @@
         },
       },
     },
-    created () {
-      this.getOrders()
+    watch: {
+      options: {
+        deep: true,
+        handler () {
+          this.ordersComputed = []
+          this.getOrders()
+        },
+      },
     },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       async getOrders () {
+        const params = {
+          sizePage: this.options.itemsPerPage,
+          page: this.options.page,
+        }
         this.SET_LOADING(true)
-        const serviceResponse = await getOrdersApi()
+        const serviceResponse = await getOrdersApi(params)
         if (serviceResponse.ok) {
-          this.ordersComputed = serviceResponse.data
+          this.ordersComputed = serviceResponse.data.orders
+          this.paginate(serviceResponse.data.paginate)
         } else {
           this.SET_ALERT({
             text: serviceResponse.message.text,

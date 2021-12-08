@@ -22,3 +22,5 @@ export const orderAdminPath = `${adminIndexPath}/order`
 export const expenseAdminPath = `${adminIndexPath}/expense`
 export const organizationAdminPath = `${adminIndexPath}/organization`
 export const roleAdminPath = `${adminIndexPath}/role`
+export const saleClientAdminPath = `${adminIndexPath}/sale-client`
+export const saleSystemAdminPath = `${adminIndexPath}/sale-system`

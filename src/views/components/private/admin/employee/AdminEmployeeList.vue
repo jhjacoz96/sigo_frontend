@@ -16,9 +16,13 @@
         :items="employeesComputed"
         :search="search"
         :loading="loadingState"
+        :options.sync="options"
+        :server-items-length="totalItems"
+        :page-count="numberOfPages"
+        :footer-props="footerProps"
+        :mobile-breakpoint="0"
         :items-per-page="5"
         disable-sort
-        :mobile-breakpoint="0"
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
@@ -58,6 +62,7 @@
 </template>
 
 <script>
+  import { pagination } from '@/mixins/pagination'
   import { mapMutations, mapState, mapGetters } from 'vuex'
   import { getEmployeesApi } from '@/api/services'
   export default {
@@ -66,6 +71,7 @@
       AdminEmployeeDelete: () => import('./AdminEmployeeDelete'),
       AdminEmployeeAdd: () => import('./AdminEmployeeAdd'),
     },
+    mixins: [pagination],
     props: {
       employees: {
         type: Array,
@@ -116,16 +122,27 @@
         },
       },
     },
-    created () {
-      this.getEmployees()
+    watch: {
+      options: {
+        deep: true,
+        handler () {
+          this.employeesComputed = []
+          this.getEmployees()
+        },
+      },
     },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       async getEmployees () {
+        const params = {
+          sizePage: this.options.itemsPerPage,
+          page: this.options.page,
+        }
         this.SET_LOADING(true)
-        const serviceResponse = await getEmployeesApi()
-        if (serviceResponse) {
-          this.employeesComputed = serviceResponse.data
+        const serviceResponse = await getEmployeesApi(params)
+        if (serviceResponse.ok) {
+          this.employeesComputed = serviceResponse.data.data
+          this.paginate(serviceResponse.data.paginate)
         } else {
           this.SET_ALERT({
             text: serviceResponse.message.text,

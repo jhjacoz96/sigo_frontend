@@ -189,6 +189,7 @@
         type_currency: [
           'BS',
           'USD',
+          'CLP',
         ],
         company: {
           id: null,

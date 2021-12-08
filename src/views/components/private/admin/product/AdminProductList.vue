@@ -16,9 +16,13 @@
         :search="search"
         :loading="loadingState"
         :items="productsComputed"
+        :options.sync="options"
+        :server-items-length="totalItems"
+        :page-count="numberOfPages"
+        :footer-props="footerProps"
+        :mobile-breakpoint="0"
         :items-per-page="5"
         disable-sort
-        :mobile-breakpoint="0"
       >
         <template v-slot:item.accion="{ item }">
           <v-btn
@@ -70,6 +74,7 @@
 </template>
 
 <script>
+  import { pagination } from '@/mixins/pagination'
   import { mapMutations, mapState, mapGetters } from 'vuex'
   import { getProductsApi } from '@/api/services'
   export default {
@@ -78,6 +83,7 @@
       AdminProductDelete: () => import('./AdminProductDelete'),
       AdminProductAdd: () => import('./AdminProductAdd'),
     },
+    mixins: [pagination],
     props: {
       products: {
         type: Array,
@@ -133,16 +139,27 @@
         },
       },
     },
-    created () {
-      this.getProducts()
+    watch: {
+      options: {
+        deep: true,
+        handler () {
+          this.productsComputed = []
+          this.getProducts()
+        },
+      },
     },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       async getProducts () {
+        const params = {
+          sizePage: this.options.itemsPerPage,
+          page: this.options.page,
+        }
         this.SET_LOADING(true)
-        const serviceResponse = await getProductsApi()
+        const serviceResponse = await getProductsApi(params)
         if (serviceResponse.ok) {
-          this.productsComputed = serviceResponse.data
+          this.productsComputed = serviceResponse.data.data
+          this.paginate(serviceResponse.data.paginate)
         } else {
           this.SET_ALERT({
             text: serviceResponse.message.text,
