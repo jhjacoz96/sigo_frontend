@@ -33,7 +33,6 @@
     <v-row>
       <v-col
         cols="12"
-        lg="4"
       >
         <base-material-chart-card
           :data="chart.data"

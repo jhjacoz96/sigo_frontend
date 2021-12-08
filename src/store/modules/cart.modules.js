@@ -18,9 +18,7 @@ export default {
     SET_ITEM_CART (state, payload) {
         // const exitItem = state.cartState.includes(payload)
         // if (!exitItem) state.cartState.push(payload)
-        console.log('cart', payload)
         const existItem = state.cartState.findIndex(item => item.id === payload.id)
-        console.log('index', existItem)
         if (existItem >= 0) {
           state.cartState[existItem].quantity = payload.quantity
         } else {

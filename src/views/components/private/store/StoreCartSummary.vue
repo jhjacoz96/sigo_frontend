@@ -242,7 +242,6 @@
           this.data.client_id = this.userState.profile.id
           this.data.total = this.total.toFixed(2)
           this.data.cost_delivery = $formatPrice(this.data.cost_delivery)
-          console.log(this.data.cost_delivery)
           this.data.products = this.products.map(item => {
             return {
               product_id: item.product_id,
