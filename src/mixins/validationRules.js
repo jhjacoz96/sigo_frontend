@@ -14,9 +14,9 @@ export const validationRules = {
                 v => !!v || this.$t('validate.required', {
                     'attribute': 'cédula',
                 }),
-                v => (v || '').length >= 8 || this.$t('validate.min.numeric', {
+                v => (v || '').length >= 4 || this.$t('validate.min.numeric', {
                     'attribute': 'cédula',
-                    'min': 8,
+                    'min': 4,
                 }),
             ],
             validation_rules_type_document: [
