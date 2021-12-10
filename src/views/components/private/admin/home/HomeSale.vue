@@ -26,7 +26,7 @@
           :value="formatMoney(data ? data.current_commission_sale : 0)"
           sub-icon="mdi-cash-fast"
           sub-icon-color="red"
-          :sub-text="`Mes pasado: ${formatMoney(data ? data.last_commission_sale  : 0)}  ${currencyGetter}`"
+          :sub-text="`Mes pasado: ${formatMoney(data ? data.last_commission_sale : 0)}  ${currencyGetter}`"
         />
       </v-col>
     </v-row>
@@ -70,7 +70,7 @@
           data: {
             labels: this.data ? this.data.chart_sale.labels : [],
             series: [
-              this.data ? this.data.chart_sale.data : []
+              this.data ? this.data.chart_sale.data : [],
             ],
           },
           options: {

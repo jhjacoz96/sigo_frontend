@@ -47,7 +47,12 @@
               cols="12"
               md="6"
             >
-              <v-text-field
+              <v-select
+                v-model="employeeData.role_id"
+                :items="roles_data"
+                item-value="name"
+                item-text="name"
+                :rules="validation_rules_role"
                 label="Rol"
                 dense
                 outlined
@@ -159,7 +164,7 @@
 
 <script>
   import { validationRules } from '@/mixins/validationRules'
-  import { saveEmployeeApi, updateEmployeeApi } from '@/api/services'
+  import { saveEmployeeApi, updateEmployeeApi, getAllRolesApi } from '@/api/services'
   import { mapMutations, mapState } from 'vuex'
   export default {
     name: 'AdminEmployeeAdd',
@@ -196,12 +201,14 @@
           email: '',
           password: '',
           password_confirmation: '',
+          role_id: null,
           user_id: null,
           name: '',
           document: '',
           phone: '',
           type_document_id: '',
         },
+        roles_data: [],
       }
     },
     computed: {
@@ -256,6 +263,9 @@
         if (value !== -1) Object.assign(this.employeeData, this.employee)
       },
     },
+    created () {
+      this.getRoles()
+    },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
       close () {
@@ -265,6 +275,17 @@
           this.employeeComputed = {}
           this.$refs.form.reset()
         })
+      },
+      async getRoles () {
+        const serviceResponse = await getAllRolesApi()
+        if (serviceResponse.ok) {
+          this.roles_data = serviceResponse.data
+        } else {
+          this.SET_ALERT({
+            text: serviceResponse.message.text,
+            color: 'warning',
+          })
+        }
       },
       async saveEmployee () {
         if (this.validate) {

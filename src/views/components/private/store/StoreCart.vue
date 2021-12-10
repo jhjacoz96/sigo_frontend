@@ -6,7 +6,7 @@
     >
       <v-col
         cols="12"
-        md="8"
+        lg="8"
         class="ma-0"
       >
         <base-material-card
@@ -68,7 +68,7 @@
       </v-col>
       <v-col
         cols="12"
-        md="4"
+        lg="4"
         class="ma-0"
       >
         <store-cart-summary

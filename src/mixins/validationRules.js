@@ -24,6 +24,11 @@ export const validationRules = {
                     'attribute': 'Tipo de documento',
                 }),
             ],
+            validation_rules_role: [
+                v => !!v || this.$t('validate.required', {
+                    'attribute': 'rol',
+                }),
+            ],
             validation_rules_email: [
                 v => !!v || this.$t('validate.required', {
                     'attribute': 'correo electrónico',

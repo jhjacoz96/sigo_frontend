@@ -158,7 +158,7 @@
 
 <script>
   import { validationRules } from '@/mixins/validationRules'
-  import { saveProductApi, updateProductApi, getCategoriesApi } from '@/api/services'
+  import { saveProductApi, updateProductApi, getAllCategoriesApi } from '@/api/services'
   import { mapMutations, mapState, mapGetters } from 'vuex'
   import { VMoney } from 'v-money'
   export default {
@@ -294,7 +294,7 @@
         })
       },
       async getCategories () {
-        const serviceResponse = await getCategoriesApi()
+        const serviceResponse = await getAllCategoriesApi()
         if (serviceResponse.ok) {
           this.type_categories = serviceResponse.data
         } else {

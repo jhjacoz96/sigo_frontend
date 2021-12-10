@@ -47,16 +47,6 @@
               md="6"
             >
               <v-text-field
-                label="Rol"
-                dense
-                outlined
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              md="6"
-            >
-              <v-text-field
                 v-if="indexEditComputed === -1"
                 v-model="clientData.password"
                 :rules="validation_rules_password"

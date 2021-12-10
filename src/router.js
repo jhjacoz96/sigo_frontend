@@ -55,6 +55,11 @@ const router = new Router({
           component: () => import('@/views/components/private/store/StoreCart'),
         },
         {
+          name: 'Checkout',
+          path: 'checkout',
+          component: () => import('@/views/components/private/store/StoreCartCheckout'),
+        },
+        {
           name: 'Favoritos',
           path: 'favorito',
           component: () => import('@/views/components/private/store/StoreHeart'),
