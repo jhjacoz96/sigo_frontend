@@ -155,6 +155,9 @@
         <v-data-table
           :headers="headers"
           :items="order.products"
+          :mobile-breakpoint="0"
+          :items-per-page="5"
+          disable-sort
         >
           <template v-slot:top>
             <div class="grey--text text--lighten-1">

@@ -173,7 +173,7 @@
     data () {
       return {
         headers: [
-          { text: 'Comición pagada', value: 'amount' },
+          { text: 'Comisión pagada', value: 'amount' },
           { text: 'Cantidad de ventas', value: 'quantity' },
           { text: 'Mes', value: 'month' },
           { text: 'Año', value: 'year' },
