@@ -29,7 +29,15 @@
           <v-img
             :aspect-ratio="16/9"
             :src="image"
-          />
+          >
+            <v-btn
+              v-if="product.image !== null"
+              icon
+              @click="downloadImage(image)"
+            >
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
+          </v-img>
           <div class="d-flex justify-space-between mt-4">
             <div>
               <h3 class="text-h3 font-weight-medium">
@@ -203,6 +211,16 @@
             color: 'warning',
           })
         }
+      },
+      downloadImage (value) {
+        var fl = 'fl_attachment/'
+        var arrayString = value.split('upload/')
+        var fileURL = arrayString[0] + 'upload/' + fl + arrayString[1]
+        var a = document.createElement('a')
+        a.download = true
+        a.target = '_blank'
+        a.href = fileURL
+        a.click()
       },
     },
   }

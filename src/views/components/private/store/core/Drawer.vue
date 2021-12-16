@@ -27,9 +27,7 @@
         </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-
     <v-divider class="mb-1" />
-
     <v-list
       dense
       nav
@@ -107,15 +105,10 @@
         //   to: '/tienda/categoria',
         // },
       ],
-      profile: {
-        icon: 'mdi-account',
-        title: 'Jhon Contreras',
-        to: '/tienda/perfil',
-      },
     }),
-
     computed: {
       ...mapState(['barColor', 'barImage']),
+      ...mapState('auth', ['userState']),
       drawer: {
         get () {
           return this.$store.state.drawer
@@ -126,6 +119,13 @@
       },
       computedItems () {
         return this.items.map(this.mapItem)
+      },
+      profile () {
+        return {
+          icon: 'mdi-account',
+          title: this.userState.profile.name,
+          to: '/tienda/perfil',
+        }
       },
     },
 

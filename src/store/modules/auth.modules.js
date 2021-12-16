@@ -2,6 +2,8 @@ import {
     loginApi,
 } from '@/api/services'
 
+import router from '@/router'
+
 const user = JSON.parse(localStorage.getItem('user'))
 const organization = JSON.parse(localStorage.getItem('organization'))
 const loggedIn = JSON.parse(localStorage.getItem('loggedIn'))
@@ -89,7 +91,7 @@ export default {
     },
     logoutAction ({ commit }, payload) {
       localStorage.clear()
-      commit('LOGIN_FAIL')
+      router.go()
     },
   },
 }
