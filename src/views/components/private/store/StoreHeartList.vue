@@ -3,9 +3,13 @@
     :headers="headers"
     :items="products"
     :loading="loadingState"
+    :options.sync="options"
+    :server-items-length="totalItems"
+    :page-count="numberOfPages"
+    :footer-props="footerProps"
+    :mobile-breakpoint="0"
     :items-per-page="5"
     disable-sort
-    :mobile-breakpoint="0"
   >
     <template v-slot:item.name="{ item }">
       <base-image-preview
@@ -31,12 +35,14 @@
 
 <script>
   import { mapMutations, mapState, mapGetters } from 'vuex'
+  import { pagination } from '@/mixins/pagination'
   import {
     getFavoritesApi,
     addCartApi,
   } from '@/api/services'
   export default {
     name: 'StoreHeartList',
+    mixins: [pagination],
     data () {
       return {
         products: [],
@@ -53,6 +59,15 @@
       ...mapState('auth', ['userState']),
       ...mapGetters('auth', ['currencyGetter']),
     },
+    watch: {
+      options: {
+        deep: true,
+        handler () {
+          this.ordersComputed = []
+          this.getOrders()
+        },
+      },
+    },
     created () {
       this.getFavorites()
     },
@@ -61,9 +76,14 @@
       ...mapMutations('cart', ['SET_ITEM_CART']),
       async getFavorites () {
         this.SET_LOADING(true)
+        const params = {
+          sizePage: this.options.itemsPerPage,
+          page: this.options.page,
+        }
         const serviceResponse = await getFavoritesApi()
         if (serviceResponse.ok) {
-          this.products = serviceResponse.data
+          this.products = serviceResponse.data.data
+          this.paginate(serviceResponse.data.paginate)
         } else {
           this.SET_ALERT({
             text: serviceResponse.message.text,
