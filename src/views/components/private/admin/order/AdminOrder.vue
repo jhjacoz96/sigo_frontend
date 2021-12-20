@@ -26,7 +26,7 @@
         <v-divider class="mt-4" />
         <admin-order-list
           ref="adminOrderList"
-          :first-tab="permissionTabs.length > 0 ? permissionTabs[0].status : ''"
+          :first-tab="permissionTabs.length > 0 ? this.tab : ''"
         />
       </v-container>
     </base-material-card>
@@ -60,6 +60,7 @@
             can: 'order.status_three',
           },
         ],
+        tab: 'verificar'
       }
     },
     computed: {
@@ -70,6 +71,7 @@
     },
     methods: {
       getOrders (status) {
+        this.tab = status
         this.$refs.adminOrderList.getOrders(status)
       },
     },
