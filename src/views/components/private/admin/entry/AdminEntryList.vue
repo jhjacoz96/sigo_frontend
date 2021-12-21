@@ -3,8 +3,16 @@
     <v-card>
       <v-card-title class="pa-3">
         <v-spacer />
-        <base-text-field
+        <v-text-field
+          v-model="search"
+          dense
+          outlined
           label="Buscar"
+          color="secondary"
+          clearable
+          :append-outer-icon="'mdi-magnify'"
+          @keydown.enter.prevent="searchItem"
+          @click:append-outer="searchItem"
         />
       </v-card-title>
 
@@ -16,7 +24,7 @@
         :server-items-length="totalItems"
         :page-count="numberOfPages"
         :footer-props="footerProps"
-        :items-per-page="5"
+        :items-per-page="per"
         disable-sort
         :mobile-breakpoint="0"
       >
@@ -112,6 +120,7 @@
         expense: {},
         dialog: false,
         dialogShow: false,
+        search: '',
       }
     },
     computed: {
@@ -134,10 +143,19 @@
       confirmOrder (event, order) {
         event.stopPropagation()
       },
+      searchItem () {
+        this.expenses = []
+        this.options.itemsPerPage = this.per
+        this.options.page = 1
+        this.totalItems = 0
+        this.numberOfPages = 0
+        this.getExpenses()
+      },
       async getExpenses () {
         const params = {
           sizePage: this.options.itemsPerPage,
           page: this.options.page,
+          search: this.search,
         }
         this.SET_LOADING(true)
         this.expenses = []

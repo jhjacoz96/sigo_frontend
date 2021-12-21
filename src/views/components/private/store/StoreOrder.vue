@@ -12,11 +12,9 @@
       <!-- <v-card-text>
           <store-order-filter/>
       </v-card-text> -->
-      <v-card-text>
-        <store-order-list
-          :orders.sync="orders"
-        />
-      </v-card-text>
+      <store-order-list
+        :orders.sync="orders"
+      />
     </base-material-card>
   </v-container>
 </template>

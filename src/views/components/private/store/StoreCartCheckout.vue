@@ -54,21 +54,21 @@
                   </template>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                 <v-row justify="center">
-                     <v-col
-                       sm="6"
-                       cols="12"
-                     >
-                        <v-select
-                            v-model="data.type_payment"
-                            label="Tipo de pago *"
-                            outlined
-                            :rules="required_rules"
-                            :items="type_payment"
-                            dense
-                        />
-                     </v-col>
-                 </v-row>
+                  <v-row justify="center">
+                    <v-col
+                      sm="6"
+                      cols="12"
+                    >
+                      <v-select
+                        v-model="data.type_payment"
+                        label="Tipo de pago *"
+                        outlined
+                        :rules="required_rules"
+                        :items="type_payment"
+                        dense
+                      />
+                    </v-col>
+                  </v-row>
                 </v-expansion-panel-content>
               </v-expansion-panel>
 

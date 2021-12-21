@@ -3,8 +3,16 @@
     <v-card>
       <v-card-title class="pa-3">
         <v-spacer />
-        <base-text-field
+        <v-text-field
+          v-model="search"
+          dense
+          outlined
           label="Buscar"
+          color="secondary"
+          clearable
+          :append-outer-icon="'mdi-magnify'"
+          @keydown.enter.prevent="searchItem"
+          @click:append-outer="searchItem"
         />
       </v-card-title>
       <v-data-table
@@ -15,7 +23,7 @@
         :server-items-length="totalItems"
         :page-count="numberOfPages"
         :footer-props="footerProps"
-        :items-per-page="5"
+        :items-per-page="per"
         disable-sort
         :mobile-breakpoint="0"
       >
@@ -103,6 +111,7 @@
     },
     data () {
       return {
+        search: '',
         orders: [],
         headers: [
           {
@@ -167,11 +176,23 @@
         event.stopPropagation()
         // console.log(order)
       },
+      searchItem () {
+        this.orders = []
+        this.clearPaginate()
+        this.getOrders(this.firstTab)
+      },
+      clearPaginate () {
+        this.options.itemsPerPage = this.per
+        this.options.page = 1
+        this.totalItems = 0
+        this.numberOfPages = 0
+      },
       async getOrders (status) {
         const params = {
           status,
           sizePage: this.options.itemsPerPage,
           page: this.options.page,
+          search: this.search,
         }
         this.SET_LOADING(true)
         this.orders = []

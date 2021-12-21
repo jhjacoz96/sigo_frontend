@@ -1,5 +1,19 @@
 <template>
   <div>
+    <v-card-title class="pa-3">
+      <v-spacer />
+      <v-text-field
+        v-model="search"
+        dense
+        outlined
+        label="Buscar"
+        color="secondary"
+        clearable
+        :append-outer-icon="'mdi-magnify'"
+        @keydown.enter.prevent="searchItem"
+        @click:append-outer="searchItem"
+      />
+    </v-card-title>
     <v-data-table
       :headers="headers"
       :items="ordersComputed"
@@ -9,7 +23,7 @@
       :page-count="numberOfPages"
       :footer-props="footerProps"
       :mobile-breakpoint="0"
-      :items-per-page="5"
+      :items-per-page="per"
       disable-sort
     >
       <template v-slot:item.created_at="{ item }">
@@ -90,10 +104,19 @@
     },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
+      searchItem () {
+        this.productsComputed = []
+        this.options.itemsPerPage = this.per
+        this.options.page = 1
+        this.totalItems = 0
+        this.numberOfPages = 0
+        this.getProducts()
+      },
       async getOrders () {
         const params = {
           sizePage: this.options.itemsPerPage,
           page: this.options.page,
+          search: this.search,
         }
         this.SET_LOADING(true)
         const serviceResponse = await getOrdersApi(params)

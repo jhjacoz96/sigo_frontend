@@ -8,7 +8,7 @@
     :page-count="numberOfPages"
     :footer-props="footerProps"
     :mobile-breakpoint="0"
-    :items-per-page="5"
+    :items-per-page="10"
     disable-sort
   >
     <template v-slot:item.name="{ item }">

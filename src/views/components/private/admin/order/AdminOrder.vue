@@ -60,7 +60,7 @@
             can: 'order.status_three',
           },
         ],
-        tab: 'verificar'
+        tab: 'verificar',
       }
     },
     computed: {
@@ -72,6 +72,7 @@
     methods: {
       getOrders (status) {
         this.tab = status
+        this.$refs.adminOrderList.clearPaginate()
         this.$refs.adminOrderList.getOrders(status)
       },
     },

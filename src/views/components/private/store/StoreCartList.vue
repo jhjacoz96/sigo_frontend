@@ -4,7 +4,7 @@
       :headers="headers"
       :items="productsComputed"
       :loading="loadingState"
-      :items-per-page="5"
+      :items-per-page="10"
       disable-sort
       :mobile-breakpoint="0"
     >

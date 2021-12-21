@@ -3,7 +3,7 @@
     <v-btn
       color="primary"
       :small="$vuetify.breakpoint.smAndDown"
-      @click="dialog = !dialog"
+      @click="open()"
     >
       Agregar productos <v-icon>mdi-plus</v-icon>
     </v-btn>
@@ -18,7 +18,7 @@
           absolute
           right
           large
-          @click="dialog = !dialog"
+          @click="close()"
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>
@@ -30,9 +30,14 @@
             <v-spacer />
             <v-text-field
               v-model="search"
-              color="secondary"
-              label="Buscar"
+              dense
               outlined
+              label="Buscar"
+              color="secondary"
+              clearable
+              :append-outer-icon="'mdi-magnify'"
+              @keydown.enter.prevent="searchItem"
+              @click:append-outer="searchItem"
             />
           </v-card-text>
           <v-data-table
@@ -45,7 +50,7 @@
             :page-count="numberOfPages"
             :footer-props="footerProps"
             :mobile-breakpoint="0"
-            :items-per-page="5"
+            :items-per-page="per"
             disable-sort
           >
             <template v-slot:item.name="{ item }">
@@ -71,7 +76,7 @@
             <v-spacer />
             <v-btn
               depressed
-              @click="dialog=!dialog"
+              @click="close()"
             >
               Cerrar
             </v-btn>
@@ -133,14 +138,29 @@
           this.data = []
           this.getProducts()
         },
+        dialog (val) {
+          val || this.close()
+        },
       },
     },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
+      searchItem () {
+        this.data = []
+        this.clearPaginate()
+        this.getProducts()
+      },
+      clearPaginate () {
+        this.options.itemsPerPage = this.per
+        this.options.page = 1
+        this.totalItems = 0
+        this.numberOfPages = 0
+      },
       async getProducts () {
         const params = {
           sizePage: this.options.itemsPerPage,
           page: this.options.page,
+          search: this.search,
         }
         this.SET_LOADING(true)
         const serviceResponse = await getProductsApi(params)
@@ -154,6 +174,16 @@
           })
         }
         this.SET_LOADING(false)
+      },
+      close () {
+        this.dialog = false
+        this.search = ''
+        this.data = []
+        this.clearPaginate()
+      },
+      open () {
+        this.dialog = true
+        this.getProducts()
       },
       addCart (item) {
         var formatItem = {

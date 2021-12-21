@@ -9,6 +9,10 @@
           outlined
           label="Buscar"
           color="secondary"
+          clearable
+          :append-outer-icon="'mdi-magnify'"
+          @keydown.enter.prevent="searchItem"
+          @click:append-outer="searchItem"
         />
       </v-card-title>
       <v-data-table
@@ -21,7 +25,7 @@
         :page-count="numberOfPages"
         :footer-props="footerProps"
         :mobile-breakpoint="0"
-        :items-per-page="5"
+        :items-per-page="per"
         disable-sort
       >
         <template v-slot:item.accion="{ item }">
@@ -133,10 +137,19 @@
     },
     methods: {
       ...mapMutations(['SET_ALERT', 'SET_LOADING']),
+      searchItem () {
+        this.clientsComputed = []
+        this.options.itemsPerPage = this.per
+        this.options.page = 1
+        this.totalItems = 0
+        this.numberOfPages = 0
+        this.getClients()
+      },
       async getClients () {
         const params = {
           sizePage: this.options.itemsPerPage,
           page: this.options.page,
+          search: this.search,
         }
         this.SET_LOADING(true)
         const serviceResponse = await getClientsApi(params)
