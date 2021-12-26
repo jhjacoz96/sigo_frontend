@@ -339,7 +339,7 @@
           this.SET_LOADING(false)
         } else {
           this.SET_ALERT({
-            text: 'Formulario inválido',
+            text: 'Formulario inválido.',
             color: 'warning',
           })
         }
