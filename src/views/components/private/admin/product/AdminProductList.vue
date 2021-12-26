@@ -167,6 +167,7 @@
           sizePage: this.options.itemsPerPage,
           page: this.options.page,
           search: this.search,
+          status: 'All',
         }
         this.SET_LOADING(true)
         const serviceResponse = await getProductsApi(params)
