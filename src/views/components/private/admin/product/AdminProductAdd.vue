@@ -120,7 +120,7 @@
                 v-model="productData.status"
                 :rules="validation_rules_status"
                 :items="status"
-                item-value=""
+                item-value="value"
                 item-text="name"
                 label="Status"
                 dense
