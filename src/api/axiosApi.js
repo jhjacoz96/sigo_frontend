@@ -9,7 +9,6 @@ export const apiHttp = async (method, endpoint, data, options = {}, loading = tr
       'X-Requested-With': 'XMLHttpRequest',
       Authorization: 'Bearer ' + `${token}`,
     }
-
  // eslint-disable-next-line no-prototype-builtins
  if (!options.hasOwnProperty('headers')) options.headers = defaultHeaders
  let serviceResponse = {}
