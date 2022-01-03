@@ -8,7 +8,9 @@
     <v-data-table
       :headers="headers"
       :items="orderComputed.products"
-      :items-per-page="5"
+      :items-per-page="10"
+      disable-sort
+      :mobile-breakpoint="0"
     >
       <template v-slot:item.accion="{ item }">
         <v-btn

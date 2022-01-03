@@ -61,7 +61,7 @@
             <div class="grey--text text--lighten-1">
               Monto total de ventas:
             </div>
-            <div>{{ sale.sale_amount }} {{ currencyGetter }}</div>
+            <div>{{ formatMoney(sale.sale_amount) }} {{ currencyGetter }}</div>
           </v-col>
           <v-col
             cols="6"
@@ -81,7 +81,7 @@
             <div class="grey--text text--lighten-1">
               Comisión total de ventas:
             </div>
-            <div>{{ sale.sale_commission }} {{ currencyGetter }}</div>
+            <div>{{ formatMoney(sale.sale_commission) }} {{ currencyGetter }}</div>
           </v-col>
         </v-row>
         <div
@@ -204,6 +204,21 @@
           })
         }
         this.SET_LOADING(false)
+      },
+      formatMoney (amount) {
+        amount = parseFloat(amount)
+        var decimalCount = 2
+        var decimal = '.'
+        var thousands = ','
+        decimalCount = Math.abs(decimalCount)
+        decimalCount = isNaN(decimalCount) ? 2 : decimalCount
+
+        const negativeSign = amount < 0 ? '-' : ''
+
+        let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString()
+        let j = (i.length > 3) ? i.length % 3 : 0
+
+        return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : '')
       },
     },
   }

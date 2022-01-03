@@ -88,7 +88,7 @@
         this.SET_LOADING(true)
         const serviceResponse = await deleteProductApi(this.product.id)
         if (serviceResponse.ok) {
-          var index = this.roductsComputed.indexOf(this.product)
+          var index = this.productsComputed.indexOf(this.product)
           this.productsComputed.splice(index, 1)
           this.SET_ALERT({
             text: serviceResponse.message,

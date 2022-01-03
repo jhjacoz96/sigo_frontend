@@ -68,7 +68,7 @@
             <div class="grey--text text--lighten-1">
               Monto total de ventas (Mes actual):
             </div>
-            <div>{{ clientSale.current_total_sale }} {{ currencyGetter }}</div>
+            <div>{{ formatMoney(clientSale.current_total_sale) }} {{ currencyGetter }}</div>
           </v-col>
           <v-col
             cols="6"
@@ -88,7 +88,7 @@
             <div class="grey--text text--lighten-1">
               Comisión total de ventas (Mes actual):
             </div>
-            <div>{{ clientSale.current_commission_sale }} {{ currencyGetter }}</div>
+            <div>{{ formatMoney(clientSale.current_commission_sale) }} {{ currencyGetter }}</div>
           </v-col>
         </v-row>
         <v-row
@@ -103,7 +103,7 @@
             <div class="grey--text text--lighten-1">
               Monto total de ventas (Mes pasado):
             </div>
-            <div>{{ clientSale.last_total_sale }} {{ currencyGetter }}</div>
+            <div>{{ formatMoney(clientSale.last_total_sale) }} {{ currencyGetter }}</div>
           </v-col>
           <v-col
             cols="6"
@@ -123,7 +123,7 @@
             <div class="grey--text text--lighten-1">
               Comisión total de ventas (Mes pasado):
             </div>
-            <div>{{ clientSale.last_commission_sale }} {{ currencyGetter }}</div>
+            <div>{{ formatMoney(clientSale.last_commission_sale) }} {{ currencyGetter }}</div>
           </v-col>
         </v-row>
       </v-card-text>
@@ -227,6 +227,21 @@
           })
         }
         this.SET_LOADING(false)
+      },
+      formatMoney (amount) {
+        amount = parseFloat(amount)
+        var decimalCount = 2
+        var decimal = '.'
+        var thousands = ','
+        decimalCount = Math.abs(decimalCount)
+        decimalCount = isNaN(decimalCount) ? 2 : decimalCount
+
+        const negativeSign = amount < 0 ? '-' : ''
+
+        let i = parseInt(amount = Math.abs(Number(amount) || 0).toFixed(decimalCount)).toString()
+        let j = (i.length > 3) ? i.length % 3 : 0
+
+        return negativeSign + (j ? i.substr(0, j) + thousands : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, '$1' + thousands) + (decimalCount ? decimal + Math.abs(amount - i).toFixed(decimalCount).slice(2) : '')
       },
     },
   }
