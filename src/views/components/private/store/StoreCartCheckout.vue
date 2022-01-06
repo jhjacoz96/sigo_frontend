@@ -237,6 +237,38 @@
         products: [],
         communes: [
           {
+            label: 'VIÑA DEL CENTRO',
+            value: 'vina_del_centro',
+          },
+          {
+            label: 'VIÑA DEL MAR ALTO',
+            value: 'vina_del_mar_alto',
+          },
+          {
+            label: 'REÑACA',
+            value: 'renaca',
+          },
+          {
+            label: 'CONCÓN',
+            value: 'concon',
+          },
+          {
+            label: 'VALPARAISO',
+            value: 'valparaiso',
+          },
+          {
+            label: 'QUILPUÉ',
+            value: 'quilpue',
+          },
+          {
+            label: 'VILLA ALENAMA',
+            value: 'villa_alemana',
+          },
+          {
+            label: 'PLACILLA',
+            value: 'placilla',
+          },
+          {
             label: 'CERRILLOS',
             value: 'cerrillos',
           },

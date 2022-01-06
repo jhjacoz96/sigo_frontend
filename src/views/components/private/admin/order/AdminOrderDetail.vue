@@ -96,7 +96,7 @@
             class="text-start"
           >
             <div class="grey--text text--lighten-1">
-              Nomber:
+              Nombre:
             </div>
             <div>{{ order.name_delivery }}</div>
           </v-col>
@@ -116,7 +116,7 @@
             class="text-start"
           >
             <div class="grey--text text--lighten-1">
-              Estado:
+              Telefono:
             </div>
             <div>{{ order.phone_delivery }}</div>
           </v-col>
@@ -215,6 +215,38 @@
           { text: 'Sub total', value: 'sub_total' },
         ],
         communes: [
+          {
+            label: 'VIÑA DEL CENTRO',
+            value: 'vina_del_centro',
+          },
+          {
+            label: 'VIÑA DEL MAR ALTO',
+            value: 'vina_del_mar_alto',
+          },
+          {
+            label: 'REÑACA',
+            value: 'renaca',
+          },
+          {
+            label: 'CONCÓN',
+            value: 'concon',
+          },
+          {
+            label: 'VALPARAISO',
+            value: 'valparaiso',
+          },
+          {
+            label: 'QUILPUÉ',
+            value: 'quilpue',
+          },
+          {
+            label: 'VILLA ALENAMA',
+            value: 'villa_alemana',
+          },
+          {
+            label: 'PLACILLA',
+            value: 'placilla',
+          },
           {
             label: 'CERRILLOS',
             value: 'cerrillos',
