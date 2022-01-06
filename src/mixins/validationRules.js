@@ -135,6 +135,11 @@ export const validationRules = {
                     'max': 500,
                 }),
             ],
+            validation_rules_commune: [
+                v => !!v || this.$t('validate.required', {
+                    'attribute': 'comuna',
+                }),
+            ],
         }
     },
 }

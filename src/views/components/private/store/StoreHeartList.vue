@@ -80,7 +80,7 @@
           sizePage: this.options.itemsPerPage,
           page: this.options.page,
         }
-        const serviceResponse = await getFavoritesApi()
+        const serviceResponse = await getFavoritesApi(params)
         if (serviceResponse.ok) {
           this.products = serviceResponse.data.data
           this.paginate(serviceResponse.data.paginate)

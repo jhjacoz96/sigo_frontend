@@ -109,7 +109,6 @@
           { text: 'Acciones', sortable: false, value: 'accion' },
         ],
         provider: {},
-        search: '',
         dialogDelete: false,
         dialog: false,
         indexEdit: -1,

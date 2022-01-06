@@ -26,7 +26,7 @@
         <v-divider class="mt-4" />
         <admin-order-list
           ref="adminOrderList"
-          :first-tab="permissionTabs.length > 0 ? this.tab : ''"
+          :first-tab="permissionTabs.length > 0 ? tab : ''"
         />
       </v-container>
     </base-material-card>

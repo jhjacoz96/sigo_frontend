@@ -9,7 +9,7 @@
       :mobile-breakpoint="0"
     >
       <template v-slot:item.name="{ item }">
-        <base-image-previewnpm
+        <base-image-preview
           :src="item.product.image"
           :name="item.product.name"
         />

@@ -58,6 +58,7 @@
         client_id: null,
         total: 0,
         products: [],
+        commune: '',
       },
       tab: 0,
       tabs: ['Datos generales', 'Datos de envío', 'Carrito'],

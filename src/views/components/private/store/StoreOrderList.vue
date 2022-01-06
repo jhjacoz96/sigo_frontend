@@ -79,6 +79,7 @@
           { text: 'Acciones', value: 'accion' },
         ],
         order: {},
+        search: '',
       }
     },
     computed: {

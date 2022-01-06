@@ -145,6 +145,20 @@
                     <v-col
                       cols="12"
                     >
+                      <v-select
+                        v-model="data.commune"
+                        label="Comuna *"
+                        outlined
+                        :items="communes"
+                        item-text="label"
+                        item-value="value"
+                        :rules="validation_rules_commune"
+                        dense
+                      />
+                    </v-col>
+                    <v-col
+                      cols="12"
+                    >
                       <v-textarea
                         v-model="data.address_delivery"
                         :rules="validation_rules_address"
@@ -206,6 +220,7 @@
           client_id: null,
           total: 0,
           name_delivery: '',
+          commune: '',
           phone_delivery: '',
           cost_delivery: 0,
           address_delivery: '',
@@ -220,6 +235,164 @@
           masked: true,
         },
         products: [],
+        communes: [
+          {
+            label: 'CERRILLOS',
+            value: 'cerrillos',
+          },
+          {
+            label: 'CERRO NAVIA',
+            value: 'cerro_navia',
+          },
+          {
+            label: 'CONCHALI',
+            value: 'conchali',
+          },
+          {
+            label: 'EL BOSQUE',
+            value: 'el_bosque',
+          },
+          {
+            label: 'ESTACIÓN CENTRAL',
+            value: 'estacion_central',
+          },
+          {
+            label: 'HUECHURABA',
+            value: 'huechuraba',
+          },
+          {
+            label: 'INDEPENDENCIA',
+            value: 'independencia',
+          },
+          {
+            label: 'LA CISTERNA',
+            value: 'la_cisterna',
+          },
+          {
+            label: 'LA FLORIDA',
+            value: 'la_florida',
+          },
+          {
+            label: 'LA GRANJA',
+            value: 'la_granja',
+          },
+          {
+            label: 'LA PINTANA',
+            value: 'la_pintana',
+          },
+          {
+            label: 'LA REINA',
+            value: 'la_reina',
+          },
+          {
+            label: 'LAS CONDES',
+            value: 'las_condes',
+          },
+          {
+            label: 'LO BARNECHEA',
+            value: 'lo_barnechea',
+          },
+          {
+            label: 'LO ESPEJO',
+            value: 'lo_espejo',
+          },
+          {
+            label: 'LO PRADO',
+            value: 'lo_prado',
+          },
+          {
+            label: 'MACUL',
+            value: 'macul',
+          },
+          {
+            label: 'MAIPU',
+            value: 'maipu',
+          },
+          {
+            label: 'ÑUÑOA',
+            value: 'nunoa',
+          },
+          {
+            label: 'PUÑAFLOR',
+            value: 'punaflor',
+          },
+          {
+            label: 'PEDRO A. CERDA',
+            value: 'pedro_a_cerda',
+          },
+          {
+            label: 'PEÑALOLEN',
+            value: 'penalolen',
+          },
+          {
+            label: 'PROVIDENCIA',
+            value: 'provicencia',
+          },
+          {
+            label: 'PUDAHUEL',
+            value: 'pudahuel',
+          },
+          {
+            label: 'QUILICURA',
+            value: 'quilicura',
+          },
+          {
+            label: 'QUINTA NORMAL',
+            value: 'quinta_normal',
+          },
+          {
+            label: 'RECOLETA',
+            value: 'recoleta',
+          },
+          {
+            label: 'RENCA',
+            value: 'renca',
+          },
+          {
+            label: 'SAN JOAQUIN',
+            value: 'san_joaquin',
+          },
+          {
+            label: 'SAN MIGUEL',
+            value: 'san_miguel',
+          },
+          {
+            label: 'SAN RAMON',
+            value: 'san_ramon',
+          },
+          {
+            label: 'SANTIAGO CENTRO',
+            value: 'santiago_centro',
+          },
+          {
+            label: 'VITACURA',
+            value: 'vitacura',
+          },
+          {
+            label: 'PUENTE ALTO',
+            value: 'puente_alto',
+          },
+          {
+            label: 'SAN BERNARDO',
+            value: 'san_bernardo',
+          },
+          {
+            label: 'BUIN',
+            value: 'buin',
+          },
+          {
+            label: 'LAMPA',
+            value: 'lampa',
+          },
+          {
+            label: 'COLINA',
+            value: 'colina',
+          },
+          {
+            label: 'PADRE HURTADO',
+            value: 'padre_hurtado',
+          },
+        ],
       }
     },
     computed: {

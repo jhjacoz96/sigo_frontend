@@ -136,6 +136,16 @@
             class="text-start"
           >
             <div class="grey--text text--lighten-1">
+              Comuna:
+            </div>
+            <div>{{ getCommune(order.commune) }}</div>
+          </v-col>
+          <v-col
+            cols="6"
+            sm="4"
+            class="text-start"
+          >
+            <div class="grey--text text--lighten-1">
               Dirección:
             </div>
             <div>{{ order.address_delivery }}</div>
@@ -204,6 +214,164 @@
           { text: 'Cantidad', value: 'quantity' },
           { text: 'Sub total', value: 'sub_total' },
         ],
+        communes: [
+          {
+            label: 'CERRILLOS',
+            value: 'cerrillos',
+          },
+          {
+            label: 'CERRO NAVIA',
+            value: 'cerro_navia',
+          },
+          {
+            label: 'CONCHALI',
+            value: 'conchali',
+          },
+          {
+            label: 'EL BOSQUE',
+            value: 'el_bosque',
+          },
+          {
+            label: 'ESTACIÓN CENTRAL',
+            value: 'estacion_central',
+          },
+          {
+            label: 'HUECHURABA',
+            value: 'huechuraba',
+          },
+          {
+            label: 'INDEPENDENCIA',
+            value: 'independencia',
+          },
+          {
+            label: 'LA CISTERNA',
+            value: 'la_cisterna',
+          },
+          {
+            label: 'LA FLORIDA',
+            value: 'la_florida',
+          },
+          {
+            label: 'LA GRANJA',
+            value: 'la_granja',
+          },
+          {
+            label: 'LA PINTANA',
+            value: 'la_pintana',
+          },
+          {
+            label: 'LA REINA',
+            value: 'la_reina',
+          },
+          {
+            label: 'LAS CONDES',
+            value: 'las_condes',
+          },
+          {
+            label: 'LO BARNECHEA',
+            value: 'lo_barnechea',
+          },
+          {
+            label: 'LO ESPEJO',
+            value: 'lo_espejo',
+          },
+          {
+            label: 'LO PRADO',
+            value: 'lo_prado',
+          },
+          {
+            label: 'MACUL',
+            value: 'macul',
+          },
+          {
+            label: 'MAIPU',
+            value: 'maipu',
+          },
+          {
+            label: 'ÑUÑOA',
+            value: 'nunoa',
+          },
+          {
+            label: 'PUÑAFLOR',
+            value: 'punaflor',
+          },
+          {
+            label: 'PEDRO A. CERDA',
+            value: 'pedro_a_cerda',
+          },
+          {
+            label: 'PEÑALOLEN',
+            value: 'penalolen',
+          },
+          {
+            label: 'PROVIDENCIA',
+            value: 'provicencia',
+          },
+          {
+            label: 'PUDAHUEL',
+            value: 'pudahuel',
+          },
+          {
+            label: 'QUILICURA',
+            value: 'quilicura',
+          },
+          {
+            label: 'QUINTA NORMAL',
+            value: 'quinta_normal',
+          },
+          {
+            label: 'RECOLETA',
+            value: 'recoleta',
+          },
+          {
+            label: 'RENCA',
+            value: 'renca',
+          },
+          {
+            label: 'SAN JOAQUIN',
+            value: 'san_joaquin',
+          },
+          {
+            label: 'SAN MIGUEL',
+            value: 'san_miguel',
+          },
+          {
+            label: 'SAN RAMON',
+            value: 'san_ramon',
+          },
+          {
+            label: 'SANTIAGO CENTRO',
+            value: 'santiago_centro',
+          },
+          {
+            label: 'VITACURA',
+            value: 'vitacura',
+          },
+          {
+            label: 'PUENTE ALTO',
+            value: 'puente_alto',
+          },
+          {
+            label: 'SAN BERNARDO',
+            value: 'san_bernardo',
+          },
+          {
+            label: 'BUIN',
+            value: 'buin',
+          },
+          {
+            label: 'LAMPA',
+            value: 'lampa',
+          },
+          {
+            label: 'COLINA',
+            value: 'colina',
+          },
+          {
+            label: 'PADRE HURTADO',
+            value: 'padre_hurtado',
+          },
+        ],
       }
     },
     computed: {
@@ -249,6 +417,14 @@
         this.$nextTick(() => {
           this.$emit('update:dialog', false)
         })
+      },
+      getCommune (val) {
+        var commune = null
+        if (val) {
+          commune = this.communes.find(item => item.value === val)
+          return commune.label
+        }
+        return commune
       },
     },
   }
