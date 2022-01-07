@@ -94,7 +94,7 @@
 
  <script>
   import { pagination } from '@/mixins/pagination'
-  import { getOrdersAdminApi, updateOrderAdminApi } from '@/api/services'
+  import { getOrdersAdminApi, updateOrderAdminApi, updateOrderStatusAdminApi } from '@/api/services'
   import { mapMutations, mapState, mapGetters } from 'vuex'
   export default {
     name: 'AdminOrderList',
@@ -215,7 +215,7 @@
       async editStatusItem (item) {
         const data = item
         data.status = this.getStatusUtdate(data.status)
-        const serviceResponse = await updateOrderAdminApi(item.id, item)
+        const serviceResponse = data.status !== 'proceso ' ? await updateOrderAdminApi(item.id, data) : await updateOrderStatusAdminApi(item.id, data)
         if (serviceResponse.ok) {
           var index = this.orders.indexOf(item)
           this.orders.splice(index, 1)
