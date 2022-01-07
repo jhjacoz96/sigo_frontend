@@ -213,9 +213,9 @@
         this.order = item
       },
       async editStatusItem (item) {
-        const data = item
-        data.status = this.getStatusUtdate(data.status)
-        const serviceResponse = data.status !== 'enviado ' ? await updateOrderAdminApi(item.id, data) : await updateOrderStatusAdminApi(item.id, data)
+        item.status = this.getStatusUtdate(item.status)
+        console.log(item.status)
+        const serviceResponse = item.status !== 'enviado' ? await updateOrderAdminApi(item.id, item) : await updateOrderStatusAdminApi(item.id, item)
         if (serviceResponse.ok) {
           var index = this.orders.indexOf(item)
           this.orders.splice(index, 1)
